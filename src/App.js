@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Window, WindowHeader, WindowContent, Button, List, ListItem, Separator, styleReset, AppBar, Divider } from 'react95';
+import { Window, WindowHeader, WindowContent, Button, List, ListItem, AppBar } from 'react95';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import styled from 'styled-components';
+import { styleReset } from 'react95';
 import aboutMeIcon from './assets/aboutme.png';
 import cvIcon from './assets/cv.png';
 import blogsIcon from './assets/blogs.png';
@@ -486,7 +487,7 @@ const App = () => {
                     Company newsletter authored by me, dedicated to providing an engaging take on Identity and Access Management (IAM).
                   </p>
                   <p style={{ marginBottom: '1rem' }}>
-                    Hosted on Permit.io's Substack, includes in-depth articles, practical advice, useful resources, the <i>spiciest</i> of memes, and a recurring comic strip (Illustrated by <a href="https://www.danayeva.com/" target="_blank" style={{ color: 'blue', textDecoration: 'underline' }}>Dana Petrov</a>).
+                    Hosted on Permit.io's Substack, includes in-depth articles, practical advice, useful resources, the <i>spiciest</i> of memes, and a recurring comic strip (Illustrated by <a href="https://www.danayeva.com/" target="_blank" rel="noreferrer" style={{ color: 'blue', textDecoration: 'underline' }}>Dana Petrov</a>).
                   </p>
                   <QuoteContainer>
                     <p style={{ fontStyle: 'italic' }}>
@@ -916,7 +917,7 @@ const App = () => {
               >
                 <div style={{ marginBottom: '16px' }}>
                   <p>
-                    This website was built by me using <a href="https://react.dev/" target="_blank" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>React</a>, the <a href="https://github.com/arturbien/React95" target="_blank" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>React95</a> component library, and <a href="https://cursor.sh/" target="_blank" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>Cursor</a>.
+                    This website was built by me using <a href="https://react.dev/" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>React</a>, the <a href="https://github.com/arturbien/React95" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>React95</a> component library, and <a href="https://cursor.sh/" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>Cursor</a>.
                   </p>
                 </div>
                 

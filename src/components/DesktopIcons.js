@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   DesktopIcon,
   IconImage,
@@ -7,6 +7,18 @@ import {
 } from '../styles/StyledComponents';
 
 const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconDoubleClick }) => {
+  const [winampPosition, setWinampPosition] = useState({ bottom: '80px', right: '20px' });
+
+  // Update winamp icon position on window resize
+  useEffect(() => {
+    const updateWinampPosition = () => {
+      setWinampPosition({ bottom: '80px', right: '20px' });
+    };
+
+    window.addEventListener('resize', updateWinampPosition);
+    return () => window.removeEventListener('resize', updateWinampPosition);
+  }, []);
+
   return (
     <>
       {icons.map((icon) => (
@@ -17,6 +29,12 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
             handleIconClick(icon);
           }}
           onDoubleClick={() => handleIconDoubleClick(icon)}
+          style={icon.id === 'winamp' ? {
+            position: 'fixed',
+            bottom: winampPosition.bottom,
+            right: winampPosition.right,
+            margin: 0
+          } : {}}
         >
           <div style={{ position: 'relative' }}>
             <IconImage src={icon.icon} alt={icon.label} />

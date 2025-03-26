@@ -230,9 +230,9 @@ export const WinampSliderProgress = styled.div`
 
 export const WinampSliderThumb = styled.div`
   position: absolute;
-  width: 14px;
-  height: 14px;
-  top: -3px;
+  width: 32px;
+  height: 32px;
+  top: -1px;
   left: ${props => `calc(${props.progress}% - 7px)`};
   cursor: pointer;
   pointer-events: none;

@@ -157,17 +157,23 @@ const VideoContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: -16px;
+  width: calc(100% - 12px); /* Account for 6px margins on each side */
+  margin: 6px;
+  padding: 0;
 `;
 
 const VideoWrapper = styled.div`
   border: none;
-  padding: 15px;
+  padding: 0;
   margin: 0;
   line-height: 0;
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  justify-content: center;
   
   @media (max-width: 768px) {
-    padding: 5px;
+    padding: 0;
     
     iframe {
       width: 100% !important;
@@ -179,8 +185,10 @@ const VideoWrapper = styled.div`
 
 const VideoDescription = styled.div`
   width: 100%;
+  max-width: 760px;
   text-align: center;
-  padding: 16px 16px 16px 16px;
+  padding: 16px 0;
+  margin: 0;
 `;
 
 const VideoTitle = styled.div`
@@ -210,7 +218,7 @@ const WindowWrapper = styled(Window)`
   height: ${props => {
     switch(true) {
       case props.isVideo:
-        return '600px';
+        return 'auto';
       case props.isBlogs:
         return '391px';
       case props.isNewsletter:
@@ -235,8 +243,9 @@ const WindowWrapper = styled(Window)`
   
   @media (max-width: 768px) {
     width: 95vw !important;
-    height: auto !important;
+    height: ${props => props.isCv ? '80vh !important' : 'auto !important'};
     max-height: 80vh;
+    overflow-y: auto;
   }
 `;
 
@@ -275,6 +284,12 @@ const AboutContainer = styled.div`
   display: flex;
   gap: 20px;
   align-items: flex-start;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const ProfileImage = styled.img`
@@ -287,6 +302,10 @@ const ProfileImage = styled.img`
 
 const AboutContent = styled.div`
   flex: 1;
+  
+  @media (max-width: 768px) {
+    margin-top: 10px;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -297,6 +316,13 @@ const ButtonContainer = styled.div`
   position: absolute;
   bottom: 22px;
   right: 22px;
+  
+  @media (max-width: 768px) {
+    position: static;
+    margin-top: 20px;
+    justify-content: center;
+    width: 100%;
+  }
 `;
 
 const StyledButton = styled(Button)`
@@ -309,6 +335,12 @@ const BlogContainer = styled.div`
   gap: 20px;
   align-items: ${props => props.isNewsletter ? 'center' : 'flex-start'};
   height: 100%;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const BlogContent = styled.div`
@@ -316,6 +348,10 @@ const BlogContent = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  
+  @media (max-width: 768px) {
+    margin-top: 10px;
+  }
 `;
 
 const BlogImage = styled.img`
@@ -332,6 +368,19 @@ const BlogImage = styled.img`
   border: 2px solid ${({ theme }) => theme.borderDark};
   padding: 2px;
   background: ${({ theme }) => theme.desktopBackground};
+  
+  @media (max-width: 768px) {
+    width: ${props => {
+      if (props.isNewsletter) return '150px';
+      if (props.isHottakes) return '200px';
+      return '200px';
+    }};
+    height: ${props => {
+      if (props.isNewsletter) return '150px';
+      if (props.isHottakes) return '260px';
+      return '200px';
+    }};
+  }
 `;
 
 const QuoteContainer = styled.div`
@@ -342,10 +391,14 @@ const QuoteContainer = styled.div`
 `;
 
 const PdfContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: -16px;
-  height: calc(100% + 32px);  // Compensate for the window padding
+  position: absolute;
+  top: 12px;
+  left: 6px;
+  right: 6px;
+  bottom: 12px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 `;
 
 const BoldText = styled.span`
@@ -369,6 +422,7 @@ const App = () => {
   const [showAboutWebsiteWindow, setShowAboutWebsiteWindow] = useState(false);
   const [colonVisible, setColonVisible] = useState(true);
   const [selectedDesktopIcon, setSelectedDesktopIcon] = useState(null);  // Add this state for icon selection
+  const [isMobile, setIsMobile] = useState(false);
 
   // Add this useEffect for the blinking animation
   useEffect(() => {
@@ -548,8 +602,8 @@ const App = () => {
         <VideoContainer>
           <VideoWrapper>
             <iframe
-              width="760"            // Increased from 560
-              height="427"           // Increased from 315 (maintained 16:9 ratio)
+              width="760"
+              height="427"
               src="https://www.youtube.com/embed/JMzr21rnBes?si=6oav9kBPekMWEKYE"
               title="YouTube video player"
               frameBorder="0"
@@ -576,9 +630,13 @@ const App = () => {
             src={cvFile}
             style={{ 
               width: '100%',
-              height: '800px',
+              height: '100%',
               border: 'none',
-              display: 'block'  // Ensures no extra space
+              position: 'absolute',
+              top: '33px', // Add space for the WindowHeader
+              left: 0,
+              right: 0,
+              bottom: 0
             }}
             title="CV Preview"
           />
@@ -674,7 +732,7 @@ const App = () => {
               isCv={selectedIcon?.id === 'cv'}
               isDmk={selectedIcon?.id === 'hottakes'}
             >
-              <WindowHeader>
+              <WindowHeader style={{ position: 'relative', zIndex: 10 }}>
                 <span>
                   {selectedIcon?.id === 'about' 
                     ? 'Daniel Bass - Product Marketing Manager'
@@ -683,13 +741,14 @@ const App = () => {
                 <Button 
                   style={{ 
                     position: 'absolute', 
-                    right: '10px', 
-                    top: '11px',
+                    right: '5px', 
+                    top: '5px',
                     width: '24px',
                     height: '24px',
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    zIndex: 20
                   }}
                   size="sm"
                   square
@@ -706,7 +765,10 @@ const App = () => {
                   </span>
                 </Button>
               </WindowHeader>
-              <WindowContent>
+              <WindowContent style={{ 
+                padding: selectedIcon?.id === 'videos' ? '0' : undefined,
+                overflow: selectedIcon?.id === 'videos' ? 'visible' : 'auto'
+              }}>
                 {renderWindowContent(selectedIcon)}
               </WindowContent>
             </WindowWrapper>
@@ -803,7 +865,9 @@ const App = () => {
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: '500px',
-                height: '320px',
+                height: 'auto',
+                maxWidth: '95vw',
+                maxHeight: '80vh',
                 zIndex: 100
               }}
             >
@@ -827,7 +891,8 @@ const App = () => {
                   onClick={() => setShowSiligusWindow(false)}
                   style={{
                     marginRight: '1px',
-                    marginTop: '1px'
+                    marginTop: '1px',
+                    zIndex: 20
                   }}
                 >
                   <span style={{ 
@@ -835,72 +900,71 @@ const App = () => {
                     transform: 'translateY(-1px)',
                     display: 'block',
                     height: '30px',
-                    fontSize: '25px'  // Increase font size to make the X larger
+                    fontSize: '25px'
                   }}>×</span>
                 </Button>
               </WindowHeader>
               <WindowContent 
                 style={{ 
-                  height: 'calc(100% - 33px)', 
                   padding: '16px',
                   display: 'flex',
-                  flexDirection: 'column',
-                  overflow: 'auto'
+                  flexDirection: 'column'
                 }}
               >
                 <div style={{ 
                   display: 'flex',
                   flexDirection: 'column',
-                  height: 'calc(100% - 20px)', /* Subtract some space to ensure content fits */
                 }}>
                   <div style={{
-                    height: '36%', /* Reduce image container height */
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginBottom: '10px'
+                    marginBottom: '16px',
+                    padding: '10px'
                   }}>
                     <img 
                       src={bigSiligusImage} 
                       alt="Siligus" 
                       style={{ 
-                        maxWidth: '90%', 
-                        maxHeight: '90%',
+                        maxWidth: '100%', 
+                        height: 'auto',
+                        maxHeight: '120px',
                         objectFit: 'contain'
                       }} 
                     />
                   </div>
                   
-                  <div style={{ 
-                    width: '100%',
-                    height: '30%', /* Fixed height for quote container */
+                  <QuoteContainer style={{ 
+                    overflow: 'visible',
+                    fontSize: isMobile ? '14px' : '16px',
+                    marginBottom: '16px'
                   }}>
-                    <QuoteContainer style={{ height: '100%', maxHeight: '120px' }}>
-                      <p style={{ marginBottom: '8px' }}>
-                        <span style={{ fontWeight: 'bold' }}>Goose, noun, plural geese.</span>
-                        <span style={{ fontStyle: 'italic' }}> "A large waterfowl proverbially noted, I know not why, for foolishness."</span>
-                      </p>
-                      <p style={{ fontSize: '14px', textAlign: 'right' }}>
-                        - Samuel Johnson, <a 
-                          href="https://johnsonsdictionaryonline.com/views/search.php?term=goose"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: '#0000EE', textDecoration: 'underline' }}
-                        >
-                          A Dictionary of the English Language, 1755
-                        </a>
-                      </p>
-                    </QuoteContainer>
-                    
-                    <div style={{ 
-                      marginTop: '-4px', 
-                      padding: '8px', 
-                      fontSize: '12px',
-                      textAlign: 'center',
-                      color: '#444'
+                    <p style={{ marginBottom: '8px' }}>
+                      <span style={{ fontWeight: 'bold' }}>Goose, noun, plural geese.</span>
+                      <span style={{ fontStyle: 'italic' }}> "A large waterfowl proverbially noted, I know not why, for foolishness."</span>
+                    </p>
+                    <p style={{ 
+                      fontSize: isMobile ? '12px' : '14px',
+                      textAlign: 'right' 
                     }}>
-                      In all seriousness I have no idea - I just made this up. It's my &nbsp;<span style={{ fontStyle: 'italic' }}>Brand</span>&nbsp; now.
-                    </div>
+                      - Samuel Johnson, <a 
+                        href="https://johnsonsdictionaryonline.com/views/search.php?term=goose"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: '#0000EE', textDecoration: 'underline' }}
+                      >
+                        A Dictionary of the English Language, 1755
+                      </a>
+                    </p>
+                  </QuoteContainer>
+                  
+                  <div style={{ 
+                    padding: '8px', 
+                    fontSize: isMobile ? '11px' : '12px',
+                    textAlign: 'center',
+                    color: '#444'
+                  }}>
+                    Honestly, I have no idea. I just made this up. It's my &nbsp;<span style={{ fontStyle: 'italic' }}>Brand</span>&nbsp; now.
                   </div>
                 </div>
               </WindowContent>
@@ -917,6 +981,8 @@ const App = () => {
                 transform: 'translate(-50%, -50%)',
                 width: '500px',
                 height: '225px',
+                maxWidth: '95vw',  // Add this to limit width on mobile
+                maxHeight: '80vh', // Add this to limit height on mobile
                 zIndex: 100
               }}
             >
@@ -940,7 +1006,8 @@ const App = () => {
                   onClick={() => setShowAboutWebsiteWindow(false)}
                   style={{
                     marginRight: '1px',
-                    marginTop: '1px'
+                    marginTop: '1px',
+                    zIndex: 20  // Ensure button is clickable
                   }}
                 >
                   <span style={{ 
@@ -958,7 +1025,7 @@ const App = () => {
                   padding: '16px',
                   display: 'flex',
                   flexDirection: 'column',
-                  overflow: 'auto'
+                  overflow: 'auto'  // Allow scrolling if needed
                 }}
               >
                 <div style={{ marginBottom: '16px' }}>

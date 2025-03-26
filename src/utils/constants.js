@@ -47,7 +47,7 @@ export const desktopIcons = [
   {
     icon: soundIcon,
     label: 'LinKin_ParK-in_the_end.mp3',
-    id: 'winamp',
-    title: 'Winamp Music Player'
+    id: 'gooseamp',
+    title: 'GooseAmp Music Player'
   }
 ]; 

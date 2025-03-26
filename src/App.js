@@ -16,7 +16,7 @@ import DesktopIcons from './components/DesktopIcons';
 import Taskbar from './components/Taskbar';
 import SiligusInfoWindow from './components/SiligusInfoWindow';
 import AboutWebsiteWindow from './components/AboutWebsiteWindow';
-import WinampPlayer from './components/WinampPlayer';
+import GooseAmpPlayer from './components/GooseAmpPlayer';
 
 // Import constants
 import { desktopIcons } from './utils/constants';
@@ -27,7 +27,7 @@ const App = () => {
   const [openStartMenu, setOpenStartMenu] = useState(false);
   const [showSiligusWindow, setShowSiligusWindow] = useState(false);
   const [showAboutWebsiteWindow, setShowAboutWebsiteWindow] = useState(false);
-  const [showWinampWindow, setShowWinampWindow] = useState(false);
+  const [showGooseAmpWindow, setShowGooseAmpWindow] = useState(false);
   const [colonVisible, setColonVisible] = useState(true);
   const [selectedDesktopIcon, setSelectedDesktopIcon] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -64,8 +64,8 @@ const App = () => {
   };
 
   const handleIconDoubleClick = (icon) => {
-    if (icon.id === 'winamp') {
-      setShowWinampWindow(true);
+    if (icon.id === 'gooseamp') {
+      setShowGooseAmpWindow(true);
     } else {
       setSelectedIcon(icon);
       setShowWindow(true);
@@ -139,9 +139,9 @@ const App = () => {
             />
           )}
 
-          {showWinampWindow && (
-            <WinampPlayer 
-              onClose={() => setShowWinampWindow(false)}
+          {showGooseAmpWindow && (
+            <GooseAmpPlayer 
+              onClose={() => setShowGooseAmpWindow(false)}
             />
           )}
         </Wrapper>

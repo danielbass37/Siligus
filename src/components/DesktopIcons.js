@@ -7,16 +7,16 @@ import {
 } from '../styles/StyledComponents';
 
 const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconDoubleClick }) => {
-  const [winampPosition, setWinampPosition] = useState({ bottom: '80px', right: '20px' });
+  const [gooseampPosition, setGooseampPosition] = useState({ bottom: '80px', right: '20px' });
 
-  // Update winamp icon position on window resize
+  // Update gooseamp icon position on window resize
   useEffect(() => {
-    const updateWinampPosition = () => {
-      setWinampPosition({ bottom: '80px', right: '20px' });
+    const updateGooseampPosition = () => {
+      setGooseampPosition({ bottom: '80px', right: '20px' });
     };
 
-    window.addEventListener('resize', updateWinampPosition);
-    return () => window.removeEventListener('resize', updateWinampPosition);
+    window.addEventListener('resize', updateGooseampPosition);
+    return () => window.removeEventListener('resize', updateGooseampPosition);
   }, []);
 
   return (
@@ -29,10 +29,10 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
             handleIconClick(icon);
           }}
           onDoubleClick={() => handleIconDoubleClick(icon)}
-          style={icon.id === 'winamp' ? {
+          style={icon.id === 'gooseamp' ? {
             position: 'fixed',
-            bottom: winampPosition.bottom,
-            right: winampPosition.right,
+            bottom: gooseampPosition.bottom,
+            right: gooseampPosition.right,
             margin: 0
           } : {}}
         >

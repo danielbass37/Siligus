@@ -1,6 +1,7 @@
 # [Siligus.com](http://www.siligus.com) - Daniel Bass Portfolio
 
-A Windows 95-inspired portfolio website showcasing my work in Product Marketing, and a new hobby I picked up 3 days ago (23/03/2025).
+A Windows 95-inspired portfolio website showcasing my work in Product Marketing and the new hobby I picked up 3 (23/03/2025) days ago - 
+Playing around with Cursor.
 
 ## About This Project
 
@@ -12,6 +13,7 @@ This portfolio website is designed with a nostalgic Windows 95 aesthetic, featur
 - Video projects showcase
 - Blog posts and newsletter integration
 - Resume/CV viewer
+- GooseAmp (It plays one song from YouTube)
 - More soon I think!
 
 ## Technologies Used

@@ -1,5 +1,4 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import { Window } from 'react95';
 
 export const WinampWrapper = styled.div`
   width: 375px;

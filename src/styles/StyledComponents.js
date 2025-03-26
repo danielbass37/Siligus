@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
-import { styleReset, Window, WindowHeader, Button, List, ListItem, AppBar } from 'react95';
+import { styleReset, Window, Button, ListItem, AppBar } from 'react95';
 import ms_sans_serif from 'react95/dist/fonts/ms_sans_serif.woff2';
 import ms_sans_serif_bold from 'react95/dist/fonts/ms_sans_serif_bold.woff2';
 

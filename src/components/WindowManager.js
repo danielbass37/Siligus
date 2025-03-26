@@ -1,5 +1,5 @@
 import React from 'react';
-import { Window, WindowHeader, WindowContent, Button } from 'react95';
+import { WindowHeader, WindowContent, Button } from 'react95';
 import { WindowWrapper } from '../styles/StyledComponents';
 import AboutWindow from './AboutWindow';
 import BlogWindow from './BlogWindow';

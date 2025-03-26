@@ -123,11 +123,33 @@ const IconImage = styled.img`
 const IconText = styled.span`
   color: white;
   font-size: 16px;
-  margin-top: 8px;
+  margin-top: 4px;
   text-shadow: 1px 1px 1px black;
+  padding: 2px 4px;
   
   @media (max-width: 768px) {
     font-size: 14px;
+  }
+`;
+
+// Add a styled component for the selected icon image
+const SelectedIconOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+  background-image: linear-gradient(45deg, rgba(0, 0, 255, 0.3) 25%, transparent 25%),
+                    linear-gradient(-45deg, rgba(0, 0, 255, 0.3) 25%, transparent 25%),
+                    linear-gradient(45deg, transparent 75%, rgba(0, 0, 255, 0.3) 75%),
+                    linear-gradient(-45deg, transparent 75%, rgba(0, 0, 255, 0.3) 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+  pointer-events: none;
+  
+  @media (max-width: 768px) {
+    width: 50px;
+    height: 50px;
   }
 `;
 
@@ -243,6 +265,10 @@ const TaskBar = styled.div`
 const StartButtonStyled = styled(Button)`
   font-weight: bold;
   margin-right: 6px;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  padding-right: 8px;
 `;
 
 const AboutContainer = styled.div`
@@ -341,7 +367,8 @@ const App = () => {
   const [openStartMenu, setOpenStartMenu] = useState(false);
   const [showSiligusWindow, setShowSiligusWindow] = useState(false);
   const [showAboutWebsiteWindow, setShowAboutWebsiteWindow] = useState(false);
-  const [colonVisible, setColonVisible] = useState(true);  // Add this state for blinking colons
+  const [colonVisible, setColonVisible] = useState(true);
+  const [selectedDesktopIcon, setSelectedDesktopIcon] = useState(null);  // Add this state for icon selection
 
   // Add this useEffect for the blinking animation
   useEffect(() => {
@@ -398,7 +425,7 @@ const App = () => {
   ];
 
   const handleIconClick = (icon) => {
-    // Do nothing on single click
+    setSelectedDesktopIcon(icon.id);  // Set the selected icon on single click
   };
 
   const handleIconDoubleClick = (icon) => {
@@ -414,6 +441,8 @@ const App = () => {
     if (openStartMenu) {
       setOpenStartMenu(false);
     }
+    // Clear selected icon when clicking outside
+    setSelectedDesktopIcon(null);
   };
 
   const handleAboutSiligusClick = () => {
@@ -614,11 +643,24 @@ const App = () => {
             {desktopIcons.map((icon) => (
               <DesktopIcon 
                 key={icon.id}
-                onClick={() => handleIconClick(icon)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleIconClick(icon);
+                }}
                 onDoubleClick={() => handleIconDoubleClick(icon)}
               >
-                <IconImage src={icon.icon} alt={icon.label} />
-                <IconText>{icon.label}</IconText>
+                <div style={{ position: 'relative' }}>
+                  <IconImage src={icon.icon} alt={icon.label} />
+                  {selectedDesktopIcon === icon.id && <SelectedIconOverlay />}
+                </div>
+                <IconText 
+                  style={{
+                    backgroundColor: selectedDesktopIcon === icon.id ? '#08007F' : 'transparent',
+                    outline: selectedDesktopIcon === icon.id ? '1px dotted #FEFF00' : 'none',
+                  }}
+                >
+                  {icon.label}
+                </IconText>
               </DesktopIcon>
             ))}
           </DesktopLayout>
@@ -680,7 +722,20 @@ const App = () => {
                     toggleStartMenu();
                   }}
                 >
-                  Siligus
+                  <img 
+                    src={siligusIcon} 
+                    alt="Siligus" 
+                    style={{ 
+                      width: '20px', 
+                      height: '20px', 
+                      marginRight: '4px',
+                      marginLeft: '4px',
+                      marginBottom: '3px',
+                      display: 'block',
+                      objectFit: 'contain'
+                    }} 
+                  />
+                  <span>Siligus</span>
                 </StartButtonStyled>
                 
                 {openStartMenu && (

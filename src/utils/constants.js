@@ -4,6 +4,7 @@ import blogsIcon from '../assets/blogs.png';
 import newsletterIcon from '../assets/newsletter.png';
 import vpIcon from '../assets/vp.png';
 import dmIcon from '../assets/dm.png';
+import soundIcon from '../assets/sound.png';
 
 // Desktop icons data
 export const desktopIcons = [
@@ -43,4 +44,10 @@ export const desktopIcons = [
     id: 'hottakes', 
     title: 'Hot Developer Takes'
   },
+  {
+    icon: soundIcon,
+    label: 'LinKin_ParK-in_the_end.mp3',
+    id: 'winamp',
+    title: 'Winamp Music Player'
+  }
 ]; 

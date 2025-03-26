@@ -12,7 +12,7 @@ const AboutWebsiteWindow = ({ onClose, colonVisible }) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '500px',
-        height: '225px',
+        height: '260px',
         maxWidth: '95vw',
         maxHeight: '80vh',
         zIndex: 100
@@ -81,8 +81,12 @@ const AboutWebsiteWindow = ({ onClose, colonVisible }) => {
               letterSpacing: '1px',
               fontSize: '20px'
             }}>
-              09H{colonVisible ? ':' : ' '}37M{colonVisible ? ':' : ' '}26S
+              12H{colonVisible ? ':' : ' '}22M{colonVisible ? ':' : ' '}34S
             </span>
+          </p>
+          
+          <p style={{ textAlign: 'center', marginTop: '15px' }}>
+            The GitHub Repo for it is available <a href="https://github.com/danielbass37/Siligus" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>here</a>.
           </p>
         </div>
       </WindowContent>

@@ -23,7 +23,7 @@ const AboutWindow = () => {
           I took everything I learned bartending, and applied it to making blogs, microcopy, docs, ads, and newsletters sound honest, genuine, and human.
         </p>
         <p>
-          Replace AI with me.
+          I also built this thing. Replace AI with me.
         </p>
         <ButtonContainer>
           <StyledButton 

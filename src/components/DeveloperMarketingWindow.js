@@ -34,7 +34,7 @@ const DeveloperMarketingWindow = () => {
         </div>
         <ButtonContainer>
           <StyledButton 
-            onClick={() => window.open('https://www.permit.io/blog/developer-marketing', '_blank')}
+            onClick={() => window.open('https://permit.substack.com/p/oh-no-dont-look-its-developer-marketing', '_blank')}
           >
             Read the Blog
           </StyledButton>

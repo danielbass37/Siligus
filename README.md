@@ -1,4 +1,4 @@
-# Siligus - Daniel Bass Portfolio
+# [Siligus](www.siligus.com) - Daniel Bass Portfolio
 
 A Windows 95-inspired portfolio website showcasing my work in Product Marketing, and a new hobby I picked up 3 days ago (23/03/2025).
 

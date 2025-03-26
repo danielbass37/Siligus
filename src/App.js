@@ -245,15 +245,6 @@ const StartButtonStyled = styled(Button)`
   margin-right: 6px;
 `;
 
-const IconWrapper = styled.div`
-  font-family: 'ms_sans_serif';
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const AboutContainer = styled.div`
   display: flex;
   gap: 20px;

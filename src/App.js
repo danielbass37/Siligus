@@ -421,8 +421,20 @@ const App = () => {
   const [showSiligusWindow, setShowSiligusWindow] = useState(false);
   const [showAboutWebsiteWindow, setShowAboutWebsiteWindow] = useState(false);
   const [colonVisible, setColonVisible] = useState(true);
-  const [selectedDesktopIcon, setSelectedDesktopIcon] = useState(null);  // Add this state for icon selection
-  const [isMobile, setIsMobile] = useState(false);
+  const [selectedDesktopIcon, setSelectedDesktopIcon] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // Add this useEffect to handle window resize and update isMobile state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Add this useEffect for the blinking animation
   useEffect(() => {

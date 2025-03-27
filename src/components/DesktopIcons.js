@@ -44,6 +44,10 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
             handleIconClick(icon);
           }}
           onDoubleClick={() => handleIconDoubleClick(icon)}
+          style={{
+            // Apply conditional styling based on mobile state
+            margin: isMobile ? '6px' : '12px',
+          }}
         >
           <div style={{ position: 'relative' }}>
             <IconImage src={icon.icon} alt={icon.label} />
@@ -53,6 +57,7 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
             style={{
               backgroundColor: selectedDesktopIcon === icon.id ? '#08007F' : 'transparent',
               outline: selectedDesktopIcon === icon.id ? '1px dotted #FEFF00' : 'none',
+              fontSize: isMobile ? '13px' : '16px',
             }}
           >
             {icon.label}
@@ -83,6 +88,7 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
             style={{
               backgroundColor: selectedDesktopIcon === gooseampIcon.id ? '#08007F' : 'transparent',
               outline: selectedDesktopIcon === gooseampIcon.id ? '1px dotted #FEFF00' : 'none',
+              fontSize: isMobile ? '13px' : '16px',
             }}
           >
             {gooseampIcon.label}

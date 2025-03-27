@@ -32,7 +32,7 @@ const DeveloperMarketingWindow = () => {
             </p>
           </QuoteContainer>
         </div>
-        <ButtonContainer>
+        <ButtonContainer isFixed>
           <StyledButton 
             onClick={() => window.open('https://permit.substack.com/p/oh-no-dont-look-its-developer-marketing', '_blank')}
           >

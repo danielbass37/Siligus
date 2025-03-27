@@ -45,7 +45,15 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
       isCv={selectedIcon?.id === 'cv'}
       isDmk={selectedIcon?.id === 'hottakes'}
     >
-      <WindowHeader style={{ position: 'relative', zIndex: 10 }}>
+      <WindowHeader 
+        style={{ 
+          position: 'sticky', 
+          top: 0, 
+          zIndex: 10,
+          width: '100%',
+          boxSizing: 'border-box'
+        }}
+      >
         <span>
           {selectedIcon?.id === 'about' 
             ? 'Daniel Bass - Product Marketing Manager'
@@ -80,7 +88,9 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
       </WindowHeader>
       <WindowContent style={{ 
         padding: selectedIcon?.id === 'videos' ? '0' : undefined,
-        overflow: selectedIcon?.id === 'videos' ? 'visible' : 'auto'
+        overflow: selectedIcon?.id === 'videos' ? 'visible' : 'auto',
+        maxHeight: 'calc(80vh - 33px)', // Subtract header height
+        overflowY: 'auto'
       }}>
         {renderWindowContent(selectedIcon)}
       </WindowContent>

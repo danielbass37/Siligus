@@ -47,6 +47,9 @@ export const Wrapper = styled.div`
   @media (max-width: 768px) {
     padding: 0.5rem; /* Reduce padding on mobile */
     padding-bottom: 60px; /* Keep bottom padding for AppBar */
+    height: 100%;
+    min-height: 100vh;
+    -webkit-overflow-scrolling: touch; /* Improve scrolling on iOS */
   }
 `;
 
@@ -217,13 +220,16 @@ export const WindowWrapper = styled(Window)`
   transform: translate(-50%, -50%);
   max-width: 95vw;
   max-height: 90vh;
-  overflow: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   
   @media (max-width: 768px) {
     width: 95vw !important;
-    height: ${props => props.isCv ? '80vh !important' : 'auto !important'};
+    height: auto !important;
     max-height: 80vh;
-    overflow-y: auto;
+    top: 8%;
+    transform: translateX(-50%);
   }
 `;
 
@@ -291,13 +297,14 @@ export const ButtonContainer = styled.div`
   gap: 10px;
   justify-content: flex-end;
   margin-top: auto;
-  position: absolute;
-  bottom: 22px;
-  right: 22px;
+  position: ${props => props.isFixed ? 'static' : 'absolute'};
+  bottom: ${props => props.isFixed ? 'auto' : '22px'};
+  right: ${props => props.isFixed ? 'auto' : '22px'};
   
   @media (max-width: 768px) {
     position: static;
     margin-top: 20px;
+    margin-bottom: 10px;
     justify-content: center;
     width: 100%;
   }
@@ -318,6 +325,8 @@ export const BlogContainer = styled.div`
     flex-direction: column;
     align-items: center;
     text-align: center;
+    overflow-y: auto;
+    padding-bottom: 20px; /* Add padding to bottom for better spacing */
   }
 `;
 
@@ -329,6 +338,7 @@ export const BlogContent = styled.div`
   
   @media (max-width: 768px) {
     margin-top: 10px;
+    width: 100%;
   }
 `;
 
@@ -358,6 +368,9 @@ export const BlogImage = styled.img`
       if (props.isHottakes) return '260px';
       return '200px';
     }};
+    max-width: 80%;
+    height: auto;
+    aspect-ratio: ${props => props.isHottakes ? '275/357' : '1/1'};
   }
 `;
 

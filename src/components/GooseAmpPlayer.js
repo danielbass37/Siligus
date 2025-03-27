@@ -38,7 +38,7 @@ const YOUTUBE_VIDEO_ID = 'eVTXPUF4Oz4'; // Linkin Park - In The End
 const GooseAmpPlayer = ({ onClose }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [position, setPosition] = useState({ x: 250, y: 150 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [currentTime, setCurrentTime] = useState('0:00');
   // eslint-disable-next-line no-unused-vars
   const [duration, setDuration] = useState('3:36'); // Hardcoded for In The End
@@ -46,6 +46,33 @@ const GooseAmpPlayer = ({ onClose }) => {
   const playerRef = useRef(null);
   const sliderRef = useRef(null);
   const songTitle = "1. Linkin Park - In The End.mp3";
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Check initially
+    checkIfMobile();
+    
+    // Setup position based on device
+    if (window.innerWidth <= 768) {
+      // For mobile devices, position more to the left
+      setPosition({ x: 20, y: 100 });
+    } else {
+      // For desktop, use the original position
+      setPosition({ x: 250, y: 150 });
+    }
+    
+    // Listen for window resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
 
   const opts = {
     height: '1',
@@ -144,6 +171,13 @@ const GooseAmpPlayer = ({ onClose }) => {
     }
   };
 
+  // Handle close button click/touch with multiple event handlers
+  const handleCloseClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onClose) onClose();
+  };
+
   return (
     <Rnd
       default={{
@@ -152,6 +186,7 @@ const GooseAmpPlayer = ({ onClose }) => {
         width: 375,
         height: 'auto'
       }}
+      position={position}
       onDragStop={(e, d) => {
         setPosition({ x: d.x, y: d.y });
       }}
@@ -163,7 +198,14 @@ const GooseAmpPlayer = ({ onClose }) => {
         <GooseAmpTitleBar className="gooseamp-title-bar">
           <GooseAmpLogoText>GOOSEAMP</GooseAmpLogoText>
           <GooseAmpButtons>
-            <GooseAmpButton close title="Close" onClick={onClose}>X</GooseAmpButton>
+            <GooseAmpButton 
+              close 
+              title="Close" 
+              onClick={handleCloseClick}
+              onTouchEnd={handleCloseClick}
+            >
+              X
+            </GooseAmpButton>
           </GooseAmpButtons>
         </GooseAmpTitleBar>
         

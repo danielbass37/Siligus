@@ -44,6 +44,11 @@ export const GooseAmpButtons = styled.div`
   right: 5px;
   top: 50%;
   transform: translateY(-50%);
+  
+  @media (max-width: 768px) {
+    right: 8px;
+    gap: 4px;
+  }
 `;
 
 export const GooseAmpButton = styled.button`
@@ -58,6 +63,15 @@ export const GooseAmpButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 8px;
+  
+  @media (max-width: 768px) {
+    width: 24px;
+    height: 24px;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 14px;
+  }
 
   &:hover {
     filter: brightness(1.2);

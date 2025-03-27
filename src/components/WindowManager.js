@@ -51,10 +51,12 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
           top: 0, 
           zIndex: 10,
           width: '100%',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          paddingTop: '3px',
+          height: '33px'
         }}
       >
-        <span>
+        <span style={{ position: 'relative', top: '-4px' }}>
           {selectedIcon?.id === 'about' 
             ? 'Daniel Bass - Product Marketing Manager'
             : selectedIcon?.label}
@@ -63,7 +65,7 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
           style={{ 
             position: 'absolute', 
             right: '5px', 
-            top: '5px',
+            top: '3px',
             width: '24px',
             height: '24px',
             display: 'flex',
@@ -89,7 +91,7 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
       <WindowContent style={{ 
         padding: selectedIcon?.id === 'videos' ? '0' : undefined,
         overflow: selectedIcon?.id === 'videos' ? 'visible' : 'auto',
-        maxHeight: 'calc(80vh - 33px)', // Subtract header height
+        maxHeight: 'calc(80vh - 33px)',
         overflowY: 'auto'
       }}>
         {renderWindowContent(selectedIcon)}

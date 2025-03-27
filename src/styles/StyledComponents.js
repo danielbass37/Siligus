@@ -65,10 +65,11 @@ export const DesktopLayout = styled.div`
   width: 100%;
   
   @media (max-width: 768px) {
+    display: grid;
     grid-template-columns: repeat(2, auto);
-    grid-auto-flow: column;
-    grid-template-rows: repeat(5, auto);
-    justify-content: start;
+    grid-auto-flow: dense;
+    grid-template-rows: repeat(4, auto);
+    justify-content: flex-start;
     overflow-y: auto;
     max-height: calc(100vh - 60px);
     padding: 0;

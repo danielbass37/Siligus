@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { WindowHeader, WindowContent, Button } from 'react95';
+import { Rnd } from 'react-rnd';
 import { WindowWrapper } from '../styles/StyledComponents';
 import AboutWindow from './AboutWindow';
 import BlogWindow from './BlogWindow';
@@ -8,6 +9,93 @@ import CVWindow from './CVWindow';
 import DeveloperMarketingWindow from './DeveloperMarketingWindow';
 
 const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [windowSize, setWindowSize] = useState({
+    width: 'auto',
+    height: 'auto'
+  });
+
+  // Set initial position based on window size
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    // Adjust position based on icon type and screen size
+    let initialWidth;
+    let initialHeight;
+    
+    switch(true) {
+      case selectedIcon?.id === 'videos':
+        initialWidth = isMobile ? screenWidth * 0.95 : 800;
+        initialHeight = 'auto';
+        break;
+      case selectedIcon?.id === 'blogs':
+        initialWidth = isMobile ? screenWidth * 0.95 : 700;
+        initialHeight = isMobile ? 'auto' : 391;
+        break;
+      case selectedIcon?.id === 'newsletter':
+        initialWidth = isMobile ? screenWidth * 0.95 : 700;
+        initialHeight = isMobile ? 'auto' : 400;
+        break;
+      case selectedIcon?.id === 'about':
+        initialWidth = isMobile ? screenWidth * 0.95 : 650;
+        initialHeight = isMobile ? 'auto' : 320;
+        break;
+      case selectedIcon?.id === 'cv':
+        initialWidth = isMobile ? screenWidth * 0.95 : 850;
+        initialHeight = isMobile ? 'auto' : 850;
+        break;
+      case selectedIcon?.id === 'hottakes':
+        initialWidth = isMobile ? screenWidth * 0.95 : 765;
+        initialHeight = isMobile ? 'auto' : 470;
+        break;
+      default:
+        initialWidth = isMobile ? screenWidth * 0.95 : 600;
+        initialHeight = 'auto';
+    }
+
+    setWindowSize({
+      width: initialWidth,
+      height: initialHeight
+    });
+
+    // Position in the center of the screen
+    if (isMobile) {
+      setPosition({
+        x: screenWidth * 0.025,
+        y: screenHeight * 0.05
+      });
+    } else {
+      setPosition({
+        x: (screenWidth - initialWidth) / 2,
+        y: (screenHeight - (typeof initialHeight === 'number' ? initialHeight : 400)) / 2
+      });
+    }
+    
+    // Listen for resize events to adjust position and size
+    const handleResize = () => {
+      const mobileView = window.innerWidth <= 768;
+      if (mobileView) {
+        setWindowSize(prev => ({
+          ...prev,
+          width: window.innerWidth * 0.95,
+          height: 'auto'
+        }));
+        setPosition(prev => ({
+          ...prev,
+          x: window.innerWidth * 0.025,
+          y: window.innerHeight * 0.05
+        }));
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [selectedIcon]);
+
   if (!showWindow) return null;
 
   const renderWindowContent = (icon) => {
@@ -37,66 +125,87 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
   };
 
   return (
-    <WindowWrapper 
-      isVideo={selectedIcon?.id === 'videos'}
-      isBlogs={selectedIcon?.id === 'blogs'}
-      isNewsletter={selectedIcon?.id === 'newsletter'}
-      isAbout={selectedIcon?.id === 'about'}
-      isCv={selectedIcon?.id === 'cv'}
-      isDmk={selectedIcon?.id === 'hottakes'}
+    <Rnd
+      position={position}
+      size={windowSize}
+      onDragStop={(e, d) => {
+        setPosition({ x: d.x, y: d.y });
+      }}
+      enableResizing={false}
+      dragHandleClassName="window-header"
+      bounds="parent"
     >
-      <WindowHeader 
+      <WindowWrapper 
+        isVideo={selectedIcon?.id === 'videos'}
+        isBlogs={selectedIcon?.id === 'blogs'}
+        isNewsletter={selectedIcon?.id === 'newsletter'}
+        isAbout={selectedIcon?.id === 'about'}
+        isCv={selectedIcon?.id === 'cv'}
+        isDmk={selectedIcon?.id === 'hottakes'}
         style={{ 
-          position: 'sticky', 
-          top: 0, 
-          zIndex: 10,
+          position: 'static', 
+          transform: 'none',
           width: '100%',
-          boxSizing: 'border-box',
-          paddingTop: '3px',
-          height: '33px'
+          height: '100%',
+          maxWidth: 'none',
+          maxHeight: windowSize.height === 'auto' ? '80vh' : 'none'
         }}
       >
-        <span style={{ position: 'relative', top: '-4px' }}>
-          {selectedIcon?.id === 'about' 
-            ? 'Daniel Bass - Product Marketing Manager'
-            : selectedIcon?.label}
-        </span>
-        <Button 
+        <WindowHeader 
+          className="window-header"
           style={{ 
-            position: 'absolute', 
-            right: '5px', 
-            top: '3px',
-            width: '24px',
-            height: '24px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 20
+            position: 'sticky', 
+            top: 0, 
+            zIndex: 10,
+            width: '100%',
+            boxSizing: 'border-box',
+            paddingTop: '3px',
+            height: '33px',
+            cursor: 'move' // Indicate it's draggable
           }}
-          size="sm"
-          square
-          onClick={() => setShowWindow(false)}
         >
-          <span style={{ 
-            fontWeight: 'bold',
-            fontSize: '25px',
-            lineHeight: 1,
-            display: 'block',
-            transform: 'translateY(-2px)'
-          }}>
-            ×
+          <span style={{ position: 'relative', top: '-4px' }}>
+            {selectedIcon?.id === 'about' 
+              ? 'Daniel Bass - Product Marketing Manager'
+              : selectedIcon?.label}
           </span>
-        </Button>
-      </WindowHeader>
-      <WindowContent style={{ 
-        padding: selectedIcon?.id === 'videos' ? '0' : undefined,
-        overflow: selectedIcon?.id === 'videos' ? 'visible' : 'auto',
-        maxHeight: 'calc(80vh - 33px)',
-        overflowY: 'auto'
-      }}>
-        {renderWindowContent(selectedIcon)}
-      </WindowContent>
-    </WindowWrapper>
+          <Button 
+            style={{ 
+              position: 'absolute', 
+              right: '5px', 
+              top: '3px',
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 20
+            }}
+            size="sm"
+            square
+            onClick={() => setShowWindow(false)}
+          >
+            <span style={{ 
+              fontWeight: 'bold',
+              fontSize: '25px',
+              lineHeight: 1,
+              display: 'block',
+              transform: 'translateY(-2px)'
+            }}>
+              ×
+            </span>
+          </Button>
+        </WindowHeader>
+        <WindowContent style={{ 
+          padding: selectedIcon?.id === 'videos' ? '0' : undefined,
+          overflow: selectedIcon?.id === 'videos' ? 'visible' : 'auto',
+          maxHeight: 'calc(80vh - 33px)',
+          overflowY: 'auto'
+        }}>
+          {renderWindowContent(selectedIcon)}
+        </WindowContent>
+      </WindowWrapper>
+    </Rnd>
   );
 };
 

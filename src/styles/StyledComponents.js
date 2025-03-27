@@ -215,22 +215,31 @@ export const WindowWrapper = styled(Window)`
         return 'auto';
     }
   }};
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   max-width: 95vw;
   max-height: 90vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow for draggable windows */
+  
+  /* Set position only for case when not used with Rnd */
+  &:not(.draggable) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
   
   @media (max-width: 768px) {
     width: 95vw !important;
     height: auto !important;
     max-height: 80vh;
-    top: 8%;
-    transform: translateX(-50%);
+    
+    /* Set position only for case when not used with Rnd */
+    &:not(.draggable) {
+      top: 8%;
+      transform: translateX(-50%);
+    }
   }
 `;
 

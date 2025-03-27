@@ -1,96 +1,150 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Window, WindowHeader, WindowContent, Button } from 'react95';
+import { Rnd } from 'react-rnd';
 import webIcon from '../assets/web.png';
 
 const AboutWebsiteWindow = ({ onClose, colonVisible }) => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [windowSize, setWindowSize] = useState({
+    width: 500,
+    height: 260
+  });
+
+  // Set initial position
+  useEffect(() => {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const isMobile = window.innerWidth <= 768;
+    const width = isMobile ? screenWidth * 0.95 : 500;
+    const height = 260;
+    
+    setWindowSize({
+      width: isMobile ? screenWidth * 0.95 : 500,
+      height: height
+    });
+    
+    // Center the window on the screen
+    setPosition({
+      x: (screenWidth - width) / 2,
+      y: (screenHeight - height) / 2
+    });
+    
+    // Adjust on window resize
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      if (mobile) {
+        const newWidth = window.innerWidth * 0.95;
+        setWindowSize({
+          width: newWidth,
+          height: 260
+        });
+        setPosition(prev => ({
+          x: window.innerWidth * 0.025,
+          y: prev.y
+        }));
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
-    <Window
-      className="window"
-      style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '500px',
-        height: '260px',
-        maxWidth: '95vw',
-        maxHeight: '80vh',
-        zIndex: 100
+    <Rnd
+      position={position}
+      size={windowSize}
+      onDragStop={(e, d) => {
+        setPosition({ x: d.x, y: d.y });
       }}
+      enableResizing={false}
+      dragHandleClassName="window-header"
+      bounds="parent"
+      style={{ zIndex: 100 }}
     >
-      <WindowHeader
-        className="window-header"
+      <Window
+        className="window"
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
+          width: '100%',
+          height: '100%'
         }}
       >
-        <span style={{ display: 'flex', alignItems: 'center' }}>
-          <img 
-            src={webIcon} 
-            alt="About Website" 
-            style={{ width: '20px', height: '20px', marginRight: '4px', marginBottom: '4px' }} 
-          />
-          About This Website
-        </span>
-        <Button
-          onClick={onClose}
+        <WindowHeader
+          className="window-header"
           style={{
-            marginRight: '1px',
-            marginTop: '1px',
-            zIndex: 20
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'move'
           }}
         >
-          <span style={{ 
-            fontWeight: 'bold', 
-            transform: 'translateY(-1px)',
-            display: 'block',
-            height: '30px',
-            fontSize: '25px'
-          }}>×</span>
-        </Button>
-      </WindowHeader>
-      <WindowContent 
-        style={{ 
-          height: 'calc(100% - 33px)', 
-          padding: '16px',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'auto'
-        }}
-      >
-        <div style={{ marginBottom: '16px' }}>
-          <p>
-            This website was built by me using <a href="https://react.dev/" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>React</a>, the <a href="https://github.com/arturbien/React95" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>React95</a> component library, and <a href="https://cursor.sh/" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>Cursor</a>.
-          </p>
-        </div>
-        
-        <div>
-          <p>
-            Time I've spent on building this thing so far:
-          </p>
-          <p style={{ textAlign: 'center', margin: '15px 0' }}>
+          <span style={{ display: 'flex', alignItems: 'center' }}>
+            <img 
+              src={webIcon} 
+              alt="About Website" 
+              style={{ width: '20px', height: '20px', marginRight: '4px', marginBottom: '4px' }} 
+            />
+            About This Website
+          </span>
+          <Button
+            onClick={onClose}
+            style={{
+              marginRight: '1px',
+              marginTop: '1px',
+              zIndex: 20
+            }}
+          >
             <span style={{ 
-              fontFamily: 'monospace', 
-              backgroundColor: '#000', 
-              color: '#0f0',
-              padding: '2px 6px', 
-              borderRadius: '3px',
-              fontWeight: 'bold',
-              letterSpacing: '1px',
-              fontSize: '20px'
-            }}>
-              12H{colonVisible ? ':' : ' '}22M{colonVisible ? ':' : ' '}34S
-            </span>
-          </p>
+              fontWeight: 'bold', 
+              transform: 'translateY(-1px)',
+              display: 'block',
+              height: '30px',
+              fontSize: '25px'
+            }}>×</span>
+          </Button>
+        </WindowHeader>
+        <WindowContent 
+          style={{ 
+            height: 'calc(100% - 33px)', 
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'auto'
+          }}
+        >
+          <div style={{ marginBottom: '16px' }}>
+            <p>
+              This website was built by me using <a href="https://react.dev/" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>React</a>, the <a href="https://github.com/arturbien/React95" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>React95</a> component library, and <a href="https://cursor.sh/" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>Cursor</a>.
+            </p>
+          </div>
           
-          <p style={{ textAlign: 'center', marginTop: '15px' }}>
-            The GitHub Repo for it is available <a href="https://github.com/danielbass37/Siligus" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>here</a>.
-          </p>
-        </div>
-      </WindowContent>
-    </Window>
+          <div>
+            <p>
+              Time I've spent on building this thing so far:
+            </p>
+            <p style={{ textAlign: 'center', margin: '15px 0' }}>
+              <span style={{ 
+                fontFamily: 'monospace', 
+                backgroundColor: '#000', 
+                color: '#0f0',
+                padding: '2px 6px', 
+                borderRadius: '3px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                fontSize: '20px'
+              }}>
+                12H{colonVisible ? ':' : ' '}22M{colonVisible ? ':' : ' '}34S
+              </span>
+            </p>
+            
+            <p style={{ textAlign: 'center', marginTop: '15px' }}>
+              The GitHub Repo for it is available <a href="https://github.com/danielbass37/Siligus" target="_blank" rel="noreferrer" style={{ fontWeight: 'bold', color: '#0000EE', textDecoration: 'underline' }}>here</a>.
+            </p>
+          </div>
+        </WindowContent>
+      </Window>
+    </Rnd>
   );
 };
 

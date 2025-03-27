@@ -46,19 +46,13 @@ const GooseAmpPlayer = ({ onClose }) => {
   const playerRef = useRef(null);
   const sliderRef = useRef(null);
   const songTitle = "1. Linkin Park - In The End.mp3";
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile device
+  // Detect mobile device and set position
   useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    // Check initially
-    checkIfMobile();
+    const isMobile = window.innerWidth <= 768;
     
     // Setup position based on device
-    if (window.innerWidth <= 768) {
+    if (isMobile) {
       // For mobile devices, position more to the left
       setPosition({ x: 20, y: 100 });
     } else {
@@ -67,10 +61,17 @@ const GooseAmpPlayer = ({ onClose }) => {
     }
     
     // Listen for window resize
-    window.addEventListener('resize', checkIfMobile);
+    const handleResize = () => {
+      const isMobileView = window.innerWidth <= 768;
+      if (isMobileView) {
+        setPosition(prev => ({ ...prev, x: Math.min(prev.x, 20) }));
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
     
     return () => {
-      window.removeEventListener('resize', checkIfMobile);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 

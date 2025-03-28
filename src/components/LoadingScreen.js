@@ -250,60 +250,89 @@ const LoadingScreen = ({ onLoadingComplete }) => {
     audioRef.current = new Audio(win95StartupSound);
     audioRef.current.preload = 'auto';
     
-    // Try to address mobile device autoplay restrictions
+    // More robust way to handle mobile audio restrictions
     const prepareAudio = () => {
-      // Create and configure audio context for mobile devices
-      const silentPlay = () => {
+      // The AudioContext must be created or resumed within a user gesture
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      const unlockAudio = () => {
+        // Resume the audio context on user interaction
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        
+        // For Safari/iOS specific handling
         audioRef.current.volume = 0;
-        audioRef.current.play().then(() => {
-          audioRef.current.pause();
-          audioRef.current.volume = 1;
-          
-          // Remove the event listeners after successful preparation
-          document.removeEventListener('touchstart', silentPlay);
-          document.removeEventListener('click', silentPlay);
-        }).catch(e => console.log('Audio context not started yet'));
+        audioRef.current.play()
+          .then(() => {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            audioRef.current.volume = 1;
+            console.log('Audio unlocked successfully');
+          })
+          .catch(error => {
+            console.warn('Could not unlock audio', error);
+          });
+        
+        // Clean up the event listeners after attempting to unlock
+        ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(type => {
+          document.removeEventListener(type, unlockAudio);
+        });
       };
       
-      document.addEventListener('touchstart', silentPlay, { once: true });
-      document.addEventListener('click', silentPlay, { once: true });
+      // Add multiple event listeners for different interaction types
+      ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(type => {
+        document.addEventListener(type, unlockAudio, { once: true });
+      });
     };
     
     prepareAudio();
     
-    // Don't stop the audio when unmounting component
-    // Let it play through naturally
     return () => {
-      // Just clean up the reference but don't stop playback
-      audioRef.current = null;
+      // Properly clean up audio resources
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
 
   // Handle key press to continue
   const handleKeyPress = useCallback(() => {
     if (showStartPrompt && !bootSequenceComplete.current && !soundPlayed) {
-      // Play the Win95 startup sound
+      // Play the Win95 startup sound with better mobile support
       if (audioRef.current) {
-        audioRef.current.currentTime = 0; // Reset to beginning
-        const playPromise = audioRef.current.play();
+        // Reset and make sure volume is up
+        audioRef.current.currentTime = 0;
+        audioRef.current.volume = 1;
         
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            // Playback started successfully
+        // Use a timeout to ensure event handling is complete before playing
+        setTimeout(() => {
+          // Use both play methods for better browser compatibility
+          const playPromise = audioRef.current.play();
+          
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                console.log('Audio played successfully');
+                setSoundPlayed(true);
+              })
+              .catch(error => {
+                console.error('Audio play failed:', error);
+                // Continue without sound so the app doesn't get stuck
+                setSoundPlayed(true);
+              });
+          } else {
+            // Older browsers might not return a promise
             setSoundPlayed(true);
-          }).catch(error => {
-            // Auto-play was prevented
-            console.error("Error playing sound:", error);
-            // Continue without sound
-            setSoundPlayed(true);
-          });
-        }
+          }
+        }, 50);
       } else {
+        // If audio reference is lost, continue without sound
         setSoundPlayed(true);
       }
       
       bootSequenceComplete.current = true;
-      // No immediate transition - we'll handle it in the effect below
       setShowPentiumScreen(false);
     }
   }, [showStartPrompt, soundPlayed]);

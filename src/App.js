@@ -78,14 +78,27 @@ const App = () => {
 
   const handleIconClick = (icon) => {
     setSelectedDesktopIcon(icon.id);  // Set the selected icon on single click
+    
+    // On mobile devices, open windows with a single click
+    if (window.innerWidth <= 768) {
+      if (icon.id === 'gooseamp') {
+        setShowGooseAmpWindow(true);
+      } else {
+        setSelectedIcon(icon);
+        setShowWindow(true);
+      }
+    }
   };
 
   const handleIconDoubleClick = (icon) => {
-    if (icon.id === 'gooseamp') {
-      setShowGooseAmpWindow(true);
-    } else {
-      setSelectedIcon(icon);
-      setShowWindow(true);
+    // This function will only be used on desktop now
+    if (window.innerWidth > 768) {
+      if (icon.id === 'gooseamp') {
+        setShowGooseAmpWindow(true);
+      } else {
+        setSelectedIcon(icon);
+        setShowWindow(true);
+      }
     }
   };
 

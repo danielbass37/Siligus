@@ -43,7 +43,12 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
             e.stopPropagation();
             handleIconClick(icon);
           }}
-          onDoubleClick={() => handleIconDoubleClick(icon)}
+          onTouchStart={(e) => {
+            // Add touch handling for better mobile responsiveness
+            e.stopPropagation();
+            handleIconClick(icon);
+          }}
+          onDoubleClick={() => isMobile ? null : handleIconDoubleClick(icon)}
           style={{
             // Apply conditional styling based on mobile state
             margin: isMobile ? '6px' : '12px',
@@ -72,7 +77,12 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
             e.stopPropagation();
             handleIconClick(gooseampIcon);
           }}
-          onDoubleClick={() => handleIconDoubleClick(gooseampIcon)}
+          onTouchStart={(e) => {
+            // Add touch handling for better mobile responsiveness
+            e.stopPropagation();
+            handleIconClick(gooseampIcon);
+          }}
+          onDoubleClick={() => isMobile ? null : handleIconDoubleClick(gooseampIcon)}
           style={{
             position: 'fixed',
             bottom: gooseampPosition.bottom,

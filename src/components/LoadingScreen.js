@@ -183,7 +183,6 @@ const LoadingScreen = ({ onLoadingComplete }) => {
   const [currentBootMessage, setCurrentBootMessage] = useState(0);
   const bootSequenceComplete = useRef(false);
   const [soundPlayed, setSoundPlayed] = useState(false);
-  const audioRef = useRef(null);
   
   // Speed factor for the BIOS boot sequence (higher = faster)
   const speedFactor = 15;
@@ -245,62 +244,37 @@ const LoadingScreen = ({ onLoadingComplete }) => {
     setConsoleOutput(prev => prev + '\n'.repeat(count));
   }, []);
 
-  // Initialize audio on first render
-  useEffect(() => {
-    // Create the audio element
-    audioRef.current = new Audio(win95StartupSound);
-    
-    // Simple preload
-    audioRef.current.preload = 'auto';
-
-    // Clean up on unmount
-    return () => {
-      if (audioRef.current) {
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  // Handle key press to continue
+  // Simple handler for key presses
   const handleKeyPress = useCallback(() => {
     if (showStartPrompt && !bootSequenceComplete.current && !soundPlayed) {
-      // Create a fresh Audio instance for more reliable playback
-      const audio = new Audio(win95StartupSound);
-      
-      // Play the sound with a simple approach
-      try {
-        const playPromise = audio.play();
-        
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            console.log('Audio play failed, continuing without sound');
-          });
-        }
-      } catch (err) {
-        console.log('Error playing sound:', err);
-      }
-      
-      // Continue regardless of sound success
+      // Mark as complete and continue regardless of sound
       setSoundPlayed(true);
       bootSequenceComplete.current = true;
       setShowPentiumScreen(false);
+      
+      // Attempt to play sound but don't block progress
+      try {
+        const audio = new Audio(win95StartupSound);
+        audio.play().catch(() => {});
+      } catch (err) {
+        console.log('Audio error:', err);
+      }
     }
   }, [showStartPrompt, soundPlayed]);
 
-  // Set up key press event listener
+  // Set up key press event listener - keeping it simple
   useEffect(() => {
     if (showStartPrompt) {
       window.addEventListener('keydown', handleKeyPress);
-      // Also handle click/touch for mobile devices
       window.addEventListener('click', handleKeyPress);
-      window.addEventListener('touchstart', handleKeyPress);
+      
+      return () => {
+        window.removeEventListener('keydown', handleKeyPress);
+        window.removeEventListener('click', handleKeyPress);
+      };
     }
     
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-      window.removeEventListener('click', handleKeyPress);
-      window.removeEventListener('touchstart', handleKeyPress);
-    };
+    return () => {};
   }, [showStartPrompt, handleKeyPress]);
 
   // Blinking cursor effect

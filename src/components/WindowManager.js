@@ -174,14 +174,15 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
               position: 'absolute', 
               right: '5px', 
               top: '3px',
-              width: '32px',
-              height: '32px',
+              width: '24px',
+              height: '24px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               zIndex: 999,
               cursor: 'pointer',
-              padding: '6px'
+              padding: '0',
+              minWidth: '0'
             }}
             size="sm"
             square
@@ -189,13 +190,17 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
               e.stopPropagation(); // Prevent event bubbling
               setShowWindow(false);
             }}
+            onTouchStart={(e) => {
+              e.stopPropagation(); // Prevent event bubbling
+              setShowWindow(false);
+            }}
           >
             <span style={{ 
               fontWeight: 'bold',
-              fontSize: '25px',
+              fontSize: '20px',
               lineHeight: 1,
               display: 'block',
-              transform: 'translateY(-2px)'
+              transform: 'translateY(-1px)'
             }}>
               ×
             </span>
@@ -206,7 +211,12 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
           overflow: selectedIcon?.id === 'videos' ? 'visible' : 'auto',
           maxHeight: 'calc(80vh - 33px)',
           overflowY: 'auto'
-        }}>
+        }}
+        onClick={(e) => {
+          // Stop propagation to prevent interference with other click handlers
+          e.stopPropagation();
+        }}
+        >
           {renderWindowContent(selectedIcon)}
         </WindowContent>
       </WindowWrapper>

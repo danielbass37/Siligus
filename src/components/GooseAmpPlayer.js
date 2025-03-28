@@ -176,7 +176,11 @@ const GooseAmpPlayer = ({ onClose }) => {
   const handleCloseClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (onClose) onClose();
+    
+    // Add a small timeout to ensure the event has time to be processed
+    setTimeout(() => {
+      if (onClose) onClose();
+    }, 10);
   };
 
   return (
@@ -203,7 +207,7 @@ const GooseAmpPlayer = ({ onClose }) => {
               close 
               title="Close" 
               onClick={handleCloseClick}
-              onTouchEnd={handleCloseClick}
+              onTouchStart={handleCloseClick}
             >
               X
             </GooseAmpButton>

@@ -92,25 +92,30 @@ const AboutWebsiteWindow = ({ onClose, colonVisible }) => {
               e.stopPropagation(); // Prevent event bubbling
               onClose();
             }}
+            onTouchStart={(e) => {
+              e.stopPropagation(); // Prevent event bubbling
+              onClose();
+            }}
             style={{
               marginRight: '1px',
               marginTop: '1px',
               zIndex: 999,
-              width: '32px',
-              height: '32px',
+              width: '24px',
+              height: '24px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
-              padding: '6px'
+              padding: '0',
+              minWidth: '0'
             }}
           >
             <span style={{ 
               fontWeight: 'bold', 
               transform: 'translateY(-1px)',
               display: 'block',
-              height: '30px',
-              fontSize: '25px'
+              height: '24px',
+              fontSize: '20px'
             }}>×</span>
           </Button>
         </WindowHeader>

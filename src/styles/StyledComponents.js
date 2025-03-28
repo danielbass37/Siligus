@@ -400,6 +400,16 @@ export const PdfContainer = styled.div`
   margin: 0;
   padding: 0;
   overflow: hidden;
+  
+  @media (max-width: 768px) {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(80vh - 50px);
+    min-height: 500px;
+  }
 `;
 
 export const BoldText = styled.span`

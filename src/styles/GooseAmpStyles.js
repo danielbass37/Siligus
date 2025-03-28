@@ -66,11 +66,20 @@ export const GooseAmpButton = styled.button`
   padding: 8px;
   
   @media (max-width: 768px) {
-    width: 24px;
-    height: 24px;
-    padding: 12px;
-    font-size: 14px;
-    line-height: 14px;
+    width: 32px;
+    height: 32px;
+    padding: 14px;
+    font-size: 16px;
+    line-height: 16px;
+    ${props => props.close && `
+      color: #ff6666;
+      font-weight: bold;
+      width: 42px;
+      height: 42px;
+      padding: 12px;
+      position: relative;
+      z-index: 9999;
+    `}
   }
 
   &:hover {

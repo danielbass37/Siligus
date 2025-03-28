@@ -88,11 +88,21 @@ const SiligusInfoWindow = ({ onClose, isMobile }) => {
             About Siligus
           </span>
           <Button
-            onClick={onClose}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event bubbling
+              onClose();
+            }}
             style={{
               marginRight: '1px',
               marginTop: '1px',
-              zIndex: 20
+              zIndex: 999,
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+              padding: '6px'
             }}
           >
             <span style={{ 

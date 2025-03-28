@@ -174,16 +174,21 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
               position: 'absolute', 
               right: '5px', 
               top: '3px',
-              width: '24px',
-              height: '24px',
+              width: '32px',
+              height: '32px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              zIndex: 20
+              zIndex: 999,
+              cursor: 'pointer',
+              padding: '6px'
             }}
             size="sm"
             square
-            onClick={() => setShowWindow(false)}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event bubbling
+              setShowWindow(false);
+            }}
           >
             <span style={{ 
               fontWeight: 'bold',

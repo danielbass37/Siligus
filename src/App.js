@@ -31,6 +31,8 @@ const App = () => {
   const [colonVisible, setColonVisible] = useState(true);
   const [selectedDesktopIcon, setSelectedDesktopIcon] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [fadeIn, setFadeIn] = useState(false);
+  const [showBackground, setShowBackground] = useState(false);
 
   // Handle window resize and update isMobile state
   useEffect(() => {
@@ -42,6 +44,21 @@ const App = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
+  }, []);
+
+  // Fade in the desktop after loading screen
+  useEffect(() => {
+    // First set the background color to black to match the loading screen
+    // Wait a tiny bit then fade in the content
+    setTimeout(() => {
+      setFadeIn(true);
+      // After content has faded in, then transition the background color
+      setTimeout(() => {
+        setShowBackground(true);
+      }, 500); // Wait for the content fade-in transition to complete
+    }, 50);
+    
+    return () => {};
   }, []);
 
   // Blinking animation for the clock in About Website window
@@ -96,7 +113,14 @@ const App = () => {
 
   return (
     <div 
-      style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}
+      style={{ 
+        position: 'relative', 
+        height: '100vh', 
+        overflow: 'hidden',
+        opacity: fadeIn ? 1 : 0,
+        transition: 'opacity 0.5s ease-in, background-color 0.8s ease-in',
+        backgroundColor: showBackground ? '#008080' : '#000000' // Start with black background to match loading screen
+      }}
       onClick={handleOutsideClick}
     >
       <GlobalStylesWithNoScroll />

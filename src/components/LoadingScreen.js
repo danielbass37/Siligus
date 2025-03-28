@@ -247,51 +247,15 @@ const LoadingScreen = ({ onLoadingComplete }) => {
 
   // Initialize audio on first render
   useEffect(() => {
+    // Create the audio element
     audioRef.current = new Audio(win95StartupSound);
+    
+    // Simple preload
     audioRef.current.preload = 'auto';
-    
-    // More robust way to handle mobile audio restrictions
-    const prepareAudio = () => {
-      // The AudioContext must be created or resumed within a user gesture
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      
-      const unlockAudio = () => {
-        // Resume the audio context on user interaction
-        if (audioContext.state === 'suspended') {
-          audioContext.resume();
-        }
-        
-        // For Safari/iOS specific handling
-        audioRef.current.volume = 0;
-        audioRef.current.play()
-          .then(() => {
-            audioRef.current.pause();
-            audioRef.current.currentTime = 0;
-            audioRef.current.volume = 1;
-            console.log('Audio unlocked successfully');
-          })
-          .catch(error => {
-            console.warn('Could not unlock audio', error);
-          });
-        
-        // Clean up the event listeners after attempting to unlock
-        ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(type => {
-          document.removeEventListener(type, unlockAudio);
-        });
-      };
-      
-      // Add multiple event listeners for different interaction types
-      ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(type => {
-        document.addEventListener(type, unlockAudio, { once: true });
-      });
-    };
-    
-    prepareAudio();
-    
+
+    // Clean up on unmount
     return () => {
-      // Properly clean up audio resources
       if (audioRef.current) {
-        audioRef.current.pause();
         audioRef.current = null;
       }
     };
@@ -300,38 +264,24 @@ const LoadingScreen = ({ onLoadingComplete }) => {
   // Handle key press to continue
   const handleKeyPress = useCallback(() => {
     if (showStartPrompt && !bootSequenceComplete.current && !soundPlayed) {
-      // Play the Win95 startup sound with better mobile support
-      if (audioRef.current) {
-        // Reset and make sure volume is up
-        audioRef.current.currentTime = 0;
-        audioRef.current.volume = 1;
+      // Create a fresh Audio instance for more reliable playback
+      const audio = new Audio(win95StartupSound);
+      
+      // Play the sound with a simple approach
+      try {
+        const playPromise = audio.play();
         
-        // Use a timeout to ensure event handling is complete before playing
-        setTimeout(() => {
-          // Use both play methods for better browser compatibility
-          const playPromise = audioRef.current.play();
-          
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => {
-                console.log('Audio played successfully');
-                setSoundPlayed(true);
-              })
-              .catch(error => {
-                console.error('Audio play failed:', error);
-                // Continue without sound so the app doesn't get stuck
-                setSoundPlayed(true);
-              });
-          } else {
-            // Older browsers might not return a promise
-            setSoundPlayed(true);
-          }
-        }, 50);
-      } else {
-        // If audio reference is lost, continue without sound
-        setSoundPlayed(true);
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            console.log('Audio play failed, continuing without sound');
+          });
+        }
+      } catch (err) {
+        console.log('Error playing sound:', err);
       }
       
+      // Continue regardless of sound success
+      setSoundPlayed(true);
       bootSequenceComplete.current = true;
       setShowPentiumScreen(false);
     }

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
 import original from 'react95/dist/themes/original';
 
+// Import custom hooks
+import useWindowManager from './hooks/useWindowManager';
+import useGoogleAnalytics from './hooks/useGoogleAnalytics';
+
 // Import styles
 import {
   GlobalStyles,
@@ -22,29 +26,30 @@ import GooseAmpPlayer from './components/GooseAmpPlayer';
 import { desktopIcons } from './utils/constants';
 
 const App = () => {
-  const [showWindow, setShowWindow] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState(null);
-  const [openStartMenu, setOpenStartMenu] = useState(false);
-  const [showSiligusWindow, setShowSiligusWindow] = useState(false);
-  const [showAboutWebsiteWindow, setShowAboutWebsiteWindow] = useState(false);
-  const [showGooseAmpWindow, setShowGooseAmpWindow] = useState(false);
+  // Initialize Google Analytics
+  useGoogleAnalytics();
+  
+  // Use our custom window manager hook
+  const {
+    showWindow,
+    selectedIcon,
+    showSiligusWindow,
+    showAboutWebsiteWindow,
+    showGooseAmpWindow,
+    selectedDesktopIcon,
+    isMobile,
+    handleIconClick,
+    handleIconDoubleClick,
+    handleOutsideClick,
+    openSiligusWindow,
+    openAboutWebsiteWindow,
+    closeWindow
+  } = useWindowManager();
+  
+  // UI animation states
   const [colonVisible, setColonVisible] = useState(true);
-  const [selectedDesktopIcon, setSelectedDesktopIcon] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [fadeIn, setFadeIn] = useState(false);
   const [showBackground, setShowBackground] = useState(false);
-
-  // Handle window resize and update isMobile state
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   // Fade in the desktop after loading screen
   useEffect(() => {
@@ -76,52 +81,9 @@ const App = () => {
     };
   }, [showAboutWebsiteWindow]);
 
-  const handleIconClick = (icon) => {
-    setSelectedDesktopIcon(icon.id);  // Set the selected icon on single click
-    
-    // On mobile devices, open windows with a single click
-    if (window.innerWidth <= 768) {
-      if (icon.id === 'gooseamp') {
-        setShowGooseAmpWindow(true);
-      } else {
-        setSelectedIcon(icon);
-        setShowWindow(true);
-      }
-    }
-  };
-
-  const handleIconDoubleClick = (icon) => {
-    // This function will only be used on desktop now
-    if (window.innerWidth > 768) {
-      if (icon.id === 'gooseamp') {
-        setShowGooseAmpWindow(true);
-      } else {
-        setSelectedIcon(icon);
-        setShowWindow(true);
-      }
-    }
-  };
-
-  const toggleStartMenu = () => {
-    setOpenStartMenu(!openStartMenu);
-  };
-
-  const handleOutsideClick = () => {
-    if (openStartMenu) {
-      setOpenStartMenu(false);
-    }
-    // Clear selected icon when clicking outside
-    setSelectedDesktopIcon(null);
-  };
-
-  const handleAboutSiligusClick = () => {
-    setShowSiligusWindow(true);
-    setOpenStartMenu(false);
-  };
-
-  const handleAboutWebsiteClick = () => {
-    setShowAboutWebsiteWindow(true);
-    setOpenStartMenu(false);
+  const handleTaskbarOutsideClick = () => {
+    // This will clear selected icon when clicking outside
+    handleOutsideClick();
   };
 
   return (
@@ -134,7 +96,7 @@ const App = () => {
         transition: 'opacity 0.5s ease-in, background-color 0.8s ease-in',
         backgroundColor: showBackground ? '#008080' : '#000000' // Start with black background to match loading screen
       }}
-      onClick={handleOutsideClick}
+      onClick={handleTaskbarOutsideClick}
     >
       <GlobalStylesWithNoScroll />
       <GlobalStyles />
@@ -152,33 +114,31 @@ const App = () => {
           <WindowManager 
             showWindow={showWindow}
             selectedIcon={selectedIcon}
-            setShowWindow={setShowWindow}
+            setShowWindow={() => closeWindow('main')}
           />
 
           <Taskbar 
-            openStartMenu={openStartMenu}
-            toggleStartMenu={toggleStartMenu}
-            handleAboutSiligusClick={handleAboutSiligusClick}
-            handleAboutWebsiteClick={handleAboutWebsiteClick}
+            handleAboutSiligusClick={openSiligusWindow}
+            handleAboutWebsiteClick={openAboutWebsiteWindow}
           />
 
           {showSiligusWindow && (
             <SiligusInfoWindow 
-              onClose={() => setShowSiligusWindow(false)}
+              onClose={() => closeWindow('siligus')}
               isMobile={isMobile}
             />
           )}
 
           {showAboutWebsiteWindow && (
             <AboutWebsiteWindow 
-              onClose={() => setShowAboutWebsiteWindow(false)}
+              onClose={() => closeWindow('aboutWebsite')}
               colonVisible={colonVisible}
             />
           )}
 
           {showGooseAmpWindow && (
             <GooseAmpPlayer 
-              onClose={() => setShowGooseAmpWindow(false)}
+              onClose={() => closeWindow('gooseamp')}
             />
           )}
         </Wrapper>

@@ -8,7 +8,6 @@ import {
 
 const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconDoubleClick }) => {
   const [gooseampPosition, setGooseampPosition] = useState({ bottom: '80px', right: '20px' });
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Update gooseamp icon position on window resize
   useEffect(() => {
@@ -16,18 +15,9 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
       setGooseampPosition({ bottom: '80px', right: '20px' });
     };
 
-    window.addEventListener('resize', updateGooseampPosition);
-    return () => window.removeEventListener('resize', updateGooseampPosition);
-  }, []);
-
-  // Track mobile state
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    updateGooseampPosition();
+    
+    return () => {};
   }, []);
 
   // Separate regular icons from the gooseamp icon
@@ -36,74 +26,47 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
 
   return (
     <>
-      {regularIcons.map((icon) => (
-        <DesktopIcon 
-          key={icon.id}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleIconClick(icon);
-          }}
-          onTouchStart={(e) => {
-            // Add touch handling for better mobile responsiveness
-            e.stopPropagation();
-            handleIconClick(icon);
-          }}
-          onDoubleClick={() => isMobile ? null : handleIconDoubleClick(icon)}
-          style={{
-            // Apply conditional styling based on mobile state
-            margin: isMobile ? '6px' : '12px',
-          }}
-        >
-          <div style={{ position: 'relative' }}>
-            <IconImage src={icon.icon} alt={icon.label} />
-            {selectedDesktopIcon === icon.id && <SelectedIconOverlay />}
+      {/* Regular desktop icons */}
+      <div style={{ padding: '20px', display: 'flex', flexWrap: 'wrap' }}>
+        {regularIcons.map((icon) => (
+          <div key={icon.id} style={{ position: 'relative' }}>
+            <DesktopIcon
+              onClick={() => handleIconClick(icon)}
+              onDoubleClick={() => handleIconDoubleClick(icon)}
+              onTouchStart={() => handleIconClick(icon)}
+              selected={selectedDesktopIcon === icon.id}
+              style={{ margin: '10px' }}
+            >
+              <IconImage src={icon.icon} alt={icon.label} />
+              <IconText>{icon.label}</IconText>
+              {selectedDesktopIcon === icon.id && <SelectedIconOverlay />}
+            </DesktopIcon>
           </div>
-          <IconText 
-            style={{
-              backgroundColor: selectedDesktopIcon === icon.id ? '#08007F' : 'transparent',
-              outline: selectedDesktopIcon === icon.id ? '1px dotted #FEFF00' : 'none',
-              fontSize: isMobile ? '13px' : '16px',
-            }}
-          >
-            {icon.label}
-          </IconText>
-        </DesktopIcon>
-      ))}
-      
+        ))}
+      </div>
+
+      {/* GooseAmp icon (fixed position) */}
       {gooseampIcon && (
-        <DesktopIcon 
-          key={gooseampIcon.id}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleIconClick(gooseampIcon);
-          }}
-          onTouchStart={(e) => {
-            // Add touch handling for better mobile responsiveness
-            e.stopPropagation();
-            handleIconClick(gooseampIcon);
-          }}
-          onDoubleClick={() => isMobile ? null : handleIconDoubleClick(gooseampIcon)}
-          style={{
-            position: 'fixed',
-            bottom: gooseampPosition.bottom,
+        <div 
+          style={{ 
+            position: 'absolute', 
+            bottom: gooseampPosition.bottom, 
             right: gooseampPosition.right,
-            margin: 0
+            zIndex: 4
           }}
         >
-          <div style={{ position: 'relative' }}>
-            <IconImage src={gooseampIcon.icon} alt={gooseampIcon.label} />
-            {selectedDesktopIcon === gooseampIcon.id && <SelectedIconOverlay />}
-          </div>
-          <IconText 
-            style={{
-              backgroundColor: selectedDesktopIcon === gooseampIcon.id ? '#08007F' : 'transparent',
-              outline: selectedDesktopIcon === gooseampIcon.id ? '1px dotted #FEFF00' : 'none',
-              fontSize: isMobile ? '13px' : '16px',
-            }}
+          <DesktopIcon 
+            onClick={() => handleIconClick(gooseampIcon)}
+            onDoubleClick={() => handleIconDoubleClick(gooseampIcon)}
+            onTouchStart={() => handleIconClick(gooseampIcon)}
+            selected={selectedDesktopIcon === gooseampIcon.id}
+            style={{ margin: '0' }}
           >
-            {gooseampIcon.label}
-          </IconText>
-        </DesktopIcon>
+            <IconImage src={gooseampIcon.icon} alt={gooseampIcon.label} />
+            <IconText>{gooseampIcon.label}</IconText>
+            {selectedDesktopIcon === gooseampIcon.id && <SelectedIconOverlay />}
+          </DesktopIcon>
+        </div>
       )}
     </>
   );

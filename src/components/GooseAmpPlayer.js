@@ -40,8 +40,7 @@ const GooseAmpPlayer = ({ onClose }) => {
   const [isReady, setIsReady] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [currentTime, setCurrentTime] = useState('0:00');
-  // eslint-disable-next-line no-unused-vars
-  const [duration, setDuration] = useState('3:36'); // Hardcoded for In The End
+  const [duration, setDuration] = useState('3:36'); // Default duration for "In The End"
   const [progress, setProgress] = useState(0);
   const playerRef = useRef(null);
   const sliderRef = useRef(null);
@@ -92,7 +91,11 @@ const GooseAmpPlayer = ({ onClose }) => {
   const handleReady = (event) => {
     playerRef.current = event.target;
     setIsReady(true);
-    // Song duration is hardcoded for this demo
+    // Set the actual duration when the video is ready
+    const totalTime = event.target.getDuration();
+    const minutes = Math.floor(totalTime / 60);
+    const seconds = Math.floor(totalTime % 60);
+    setDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
   };
 
   useEffect(() => {

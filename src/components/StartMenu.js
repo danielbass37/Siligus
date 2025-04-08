@@ -4,8 +4,18 @@ import { StyledListItem } from '../styles/StyledComponents';
 import siligusIcon from '../assets/siligus.png';
 import webIcon from '../assets/web.png';
 
-const StartMenu = ({ openStartMenu, handleAboutSiligusClick, handleAboutWebsiteClick }) => {
+const StartMenu = ({ 
+  openStartMenu, 
+  handleAboutSiligusClick, 
+  handleAboutWebsiteClick,
+  closeMenu 
+}) => {
   if (!openStartMenu) return null;
+
+  const handleItemClick = (handler) => {
+    closeMenu();
+    handler();
+  };
 
   return (
     <List
@@ -18,7 +28,7 @@ const StartMenu = ({ openStartMenu, handleAboutSiligusClick, handleAboutWebsiteC
       onClick={(e) => e.stopPropagation()}
     >
       <StyledListItem 
-        onClick={handleAboutSiligusClick}
+        onClick={() => handleItemClick(handleAboutSiligusClick)}
       >
         <img 
           src={siligusIcon} 
@@ -36,7 +46,7 @@ const StartMenu = ({ openStartMenu, handleAboutSiligusClick, handleAboutWebsiteC
         <span>About Siligus</span>
       </StyledListItem>
       <StyledListItem 
-        onClick={handleAboutWebsiteClick}
+        onClick={() => handleItemClick(handleAboutWebsiteClick)}
       >
         <img 
           src={webIcon} 

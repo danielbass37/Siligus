@@ -12,8 +12,7 @@ const useWindowManager = () => {
     selectedIcon: null,
     showSiligusWindow: false,
     showAboutWebsiteWindow: false,
-    showGooseAmpWindow: false,
-    selectedDesktopIcon: null
+    showGooseAmpWindow: false
   });
   
   const { width, height, isMobile } = useWindowSize();
@@ -124,14 +123,6 @@ const useWindowManager = () => {
     });
   }, []);
   
-  // Handle icon selection
-  const selectDesktopIcon = useCallback((iconId) => {
-    setWindows(prev => ({
-      ...prev,
-      selectedDesktopIcon: iconId
-    }));
-  }, []);
-  
   // Special handlers for specific windows
   const openSiligusWindow = useCallback(() => {
     setWindows(prev => ({
@@ -151,27 +142,13 @@ const useWindowManager = () => {
   
   // Handle icon click based on mobile or desktop
   const handleIconClick = useCallback((icon) => {
-    selectDesktopIcon(icon.id);
-    
-    // On mobile devices, open windows with a single click
-    if (isMobile) {
-      openWindow(icon);
-    }
-  }, [selectDesktopIcon, openWindow, isMobile]);
-  
-  // Handle icon double click (desktop only)
-  const handleIconDoubleClick = useCallback((icon) => {
-    if (!isMobile) {
-      openWindow(icon);
-    }
-  }, [openWindow, isMobile]);
+    // Open window with a single click on both desktop and mobile
+    openWindow(icon);
+  }, [openWindow]);
   
   // Clear selected icon when clicking outside
   const handleOutsideClick = useCallback(() => {
-    setWindows(prev => ({
-      ...prev,
-      selectedDesktopIcon: null
-    }));
+    // No need to clear selected icon since we're not using it anymore
   }, []);
   
   return {
@@ -179,11 +156,9 @@ const useWindowManager = () => {
     isMobile,
     openWindow,
     closeWindow,
-    selectDesktopIcon,
     openSiligusWindow,
     openAboutWebsiteWindow,
     handleIconClick,
-    handleIconDoubleClick,
     handleOutsideClick,
     getWindowPositionAndSize
   };

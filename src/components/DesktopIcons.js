@@ -2,44 +2,70 @@ import React, { useEffect, useState } from 'react';
 import { 
   DesktopIcon,
   IconImage,
-  IconText,
-  SelectedIconOverlay
+  IconText
 } from '../styles/StyledComponents';
 
-const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconDoubleClick }) => {
+const DesktopIcons = ({ icons, handleIconClick }) => {
   const [gooseampPosition, setGooseampPosition] = useState({ bottom: '80px', right: '20px' });
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Update gooseamp icon position on window resize
+  // Update gooseamp position and check screen size on resize
   useEffect(() => {
-    const updateGooseampPosition = () => {
+    const handleResize = () => {
       setGooseampPosition({ bottom: '80px', right: '20px' });
+      setIsMobile(window.innerWidth <= 768);
     };
 
-    updateGooseampPosition();
+    handleResize();
+    window.addEventListener('resize', handleResize);
     
-    return () => {};
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   // Separate regular icons from the gooseamp icon
   const regularIcons = icons.filter(icon => icon.id !== 'gooseamp');
   const gooseampIcon = icons.find(icon => icon.id === 'gooseamp');
 
+  // Split icons into two columns
+  const leftColumnIcons = regularIcons.slice(0, 4); // 4 icons for desktop
+  const rightColumnIcons = regularIcons.slice(4); // Rest of the icons
+
   return (
     <>
-      {/* Regular desktop icons */}
-      <div style={{ padding: '20px', display: 'flex', flexWrap: 'wrap' }}>
-        {regularIcons.map((icon) => (
+      {/* Left column icons */}
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {leftColumnIcons.map((icon) => (
           <div key={icon.id} style={{ position: 'relative' }}>
             <DesktopIcon
               onClick={() => handleIconClick(icon)}
-              onDoubleClick={() => handleIconDoubleClick(icon)}
               onTouchStart={() => handleIconClick(icon)}
-              selected={selectedDesktopIcon === icon.id}
-              style={{ margin: '10px' }}
             >
               <IconImage src={icon.icon} alt={icon.label} />
               <IconText>{icon.label}</IconText>
-              {selectedDesktopIcon === icon.id && <SelectedIconOverlay />}
+            </DesktopIcon>
+          </div>
+        ))}
+      </div>
+
+      {/* Right column icons */}
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {rightColumnIcons.map((icon, index) => (
+          <div 
+            key={icon.id} 
+            style={{ 
+              position: 'relative',
+              // Only apply negative margin on mobile
+              marginTop: index === 0 ? '0' : (isMobile ? '-18px' : '0')
+            }}
+          >
+            <DesktopIcon
+              onClick={() => handleIconClick(icon)}
+              onTouchStart={() => handleIconClick(icon)}
+            >
+              <IconImage src={icon.icon} alt={icon.label} />
+              <IconText>{icon.label}</IconText>
             </DesktopIcon>
           </div>
         ))}
@@ -52,19 +78,16 @@ const DesktopIcons = ({ icons, selectedDesktopIcon, handleIconClick, handleIconD
             position: 'absolute', 
             bottom: gooseampPosition.bottom, 
             right: gooseampPosition.right,
-            zIndex: 4
+            zIndex: 0
           }}
         >
           <DesktopIcon 
             onClick={() => handleIconClick(gooseampIcon)}
-            onDoubleClick={() => handleIconDoubleClick(gooseampIcon)}
             onTouchStart={() => handleIconClick(gooseampIcon)}
-            selected={selectedDesktopIcon === gooseampIcon.id}
             style={{ margin: '0' }}
           >
             <IconImage src={gooseampIcon.icon} alt={gooseampIcon.label} />
             <IconText>{gooseampIcon.label}</IconText>
-            {selectedDesktopIcon === gooseampIcon.id && <SelectedIconOverlay />}
           </DesktopIcon>
         </div>
       )}

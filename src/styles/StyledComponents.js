@@ -54,26 +54,19 @@ export const Wrapper = styled.div`
 `;
 
 export const DesktopLayout = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  grid-auto-flow: column;
-  grid-template-rows: repeat(5, auto);
-  justify-content: start;
-  grid-gap: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: flex-start;
-  padding: 0;
+  padding: 20px;
   width: 100%;
+  gap: 40px;
   
   @media (max-width: 768px) {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    grid-auto-flow: dense;
-    grid-template-rows: repeat(4, auto);
-    justify-content: flex-start;
+    padding: 10px;
+    gap: 20px;
     overflow-y: auto;
     max-height: calc(100vh - 60px);
-    padding: 0;
-    grid-gap: 10px;
   }
 `;
 
@@ -82,12 +75,12 @@ export const DesktopIcon = styled.div`
   flex-direction: column;
   align-items: center;
   width: 90px;
-  margin: 12px;
+  margin-bottom: 40px;
   cursor: pointer;
   text-align: center;
   
   @media (max-width: 768px) {
-    margin: 8px;
+    margin-bottom: 35px;
     width: 70px;
   }
 `;
@@ -105,33 +98,16 @@ export const IconImage = styled.img`
 
 export const IconText = styled.span`
   color: white;
-  font-size: 16px;
+  font-size: 14px;
   margin-top: 4px;
   text-shadow: 1px 1px 1px black;
   padding: 2px 4px;
+  width: 100%;
+  text-align: center;
+  word-break: break-word;
   
   @media (max-width: 768px) {
-    font-size: 14px;
-  }
-`;
-
-export const SelectedIconOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 60px;
-  height: 60px;
-  background-image: linear-gradient(45deg, rgba(0, 0, 255, 0.3) 25%, transparent 25%),
-                    linear-gradient(-45deg, rgba(0, 0, 255, 0.3) 25%, transparent 25%),
-                    linear-gradient(45deg, transparent 75%, rgba(0, 0, 255, 0.3) 75%),
-                    linear-gradient(-45deg, transparent 75%, rgba(0, 0, 255, 0.3) 75%);
-  background-size: 4px 4px;
-  background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
-  pointer-events: none;
-  
-  @media (max-width: 768px) {
-    width: 50px;
-    height: 50px;
+    font-size: 12px;
   }
 `;
 

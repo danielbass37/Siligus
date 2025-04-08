@@ -78,7 +78,7 @@ const GooseAmpPlayer = ({ onClose }) => {
     height: '1',
     width: '1',
     playerVars: {
-      autoplay: 0,
+      autoplay: 1,
       controls: 0,
       disablekb: 1,
       fs: 0,
@@ -96,6 +96,10 @@ const GooseAmpPlayer = ({ onClose }) => {
     const minutes = Math.floor(totalTime / 60);
     const seconds = Math.floor(totalTime % 60);
     setDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+    
+    // Start playing immediately when ready
+    event.target.playVideo();
+    setIsPlaying(true);
   };
 
   useEffect(() => {

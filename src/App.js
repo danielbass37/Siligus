@@ -36,10 +36,8 @@ const App = () => {
     showSiligusWindow,
     showAboutWebsiteWindow,
     showGooseAmpWindow,
-    selectedDesktopIcon,
     isMobile,
     handleIconClick,
-    handleIconDoubleClick,
     handleOutsideClick,
     openSiligusWindow,
     openAboutWebsiteWindow,
@@ -50,6 +48,12 @@ const App = () => {
   const [colonVisible, setColonVisible] = useState(true);
   const [fadeIn, setFadeIn] = useState(false);
   const [showBackground, setShowBackground] = useState(false);
+  const [openStartMenu, setOpenStartMenu] = useState(false);
+
+  // Toggle start menu
+  const toggleStartMenu = () => {
+    setOpenStartMenu(prev => !prev);
+  };
 
   // Fade in the desktop after loading screen
   useEffect(() => {
@@ -84,6 +88,11 @@ const App = () => {
   const handleTaskbarOutsideClick = () => {
     // This will clear selected icon when clicking outside
     handleOutsideClick();
+    
+    // Close the start menu when clicking outside
+    if (openStartMenu) {
+      setOpenStartMenu(false);
+    }
   };
 
   return (
@@ -105,9 +114,7 @@ const App = () => {
           <DesktopLayout>
             <DesktopIcons 
               icons={desktopIcons}
-              selectedDesktopIcon={selectedDesktopIcon}
               handleIconClick={handleIconClick}
-              handleIconDoubleClick={handleIconDoubleClick}
             />
           </DesktopLayout>
 
@@ -118,6 +125,8 @@ const App = () => {
           />
 
           <Taskbar 
+            openStartMenu={openStartMenu}
+            toggleStartMenu={toggleStartMenu}
             handleAboutSiligusClick={openSiligusWindow}
             handleAboutWebsiteClick={openAboutWebsiteWindow}
           />

@@ -13,6 +13,13 @@ const Taskbar = ({
   handleAboutSiligusClick, 
   handleAboutWebsiteClick 
 }) => {
+  // Function to close the start menu
+  const closeMenu = () => {
+    if (openStartMenu) {
+      toggleStartMenu();
+    }
+  };
+
   return (
     <StyledAppBar>
       <TaskBarStyled>
@@ -44,6 +51,7 @@ const Taskbar = ({
             openStartMenu={openStartMenu}
             handleAboutSiligusClick={handleAboutSiligusClick}
             handleAboutWebsiteClick={handleAboutWebsiteClick}
+            closeMenu={closeMenu}
           />
         </div>
       </TaskBarStyled>

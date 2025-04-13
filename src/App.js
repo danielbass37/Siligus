@@ -23,7 +23,7 @@ import AboutWebsiteWindow from './components/AboutWebsiteWindow';
 import GooseAmpPlayer from './components/GooseAmpPlayer';
 
 // Import constants
-import { desktopIcons } from './utils/constants';
+import { desktopIcons } from './styles/IconStyles';
 
 const App = () => {
   // Initialize Google Analytics

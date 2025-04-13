@@ -6,6 +6,7 @@ import AboutWindow from './AboutWindow';
 import BlogWindow from './BlogWindow';
 import VideoProjectsWindow from './VideoProjectsWindow';
 import CVWindow from './CVWindow';
+import HOMM3CVWindow from './HOMM3CVWindow';
 import DeveloperMarketingWindow from './DeveloperMarketingWindow';
 import useWindowSize from '../hooks/useWindowSize';
 
@@ -47,6 +48,10 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
       case selectedIcon.id === 'cv':
         initialWidth = isMobile ? screenWidth * 0.95 : 850;
         initialHeight = isMobile ? 'auto' : 850;
+        break;
+      case selectedIcon.id === 'homm3cv':
+        initialWidth = isMobile ? screenWidth * 0.95 : 800;
+        initialHeight = isMobile ? 'auto' : 700;
         break;
       case selectedIcon.id === 'hottakes':
         initialWidth = isMobile ? screenWidth * 0.95 : 765;
@@ -108,6 +113,8 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
         return <VideoProjectsWindow />;
       case 'cv':
         return <CVWindow />;
+      case 'homm3cv':
+        return <HOMM3CVWindow />;
       case 'hottakes':
         return <DeveloperMarketingWindow />;
       default:
@@ -132,6 +139,7 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
       enableResizing={false}
       dragHandleClassName="window-header"
       bounds="parent"
+      style={{ zIndex: 10 }}
     >
       <WindowWrapper 
         isVideo={selectedIcon?.id === 'videos'}
@@ -139,6 +147,7 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
         isNewsletter={selectedIcon?.id === 'newsletter'}
         isAbout={selectedIcon?.id === 'about'}
         isCv={selectedIcon?.id === 'cv'}
+        isHomm3Cv={selectedIcon?.id === 'homm3cv'}
         isDmk={selectedIcon?.id === 'hottakes'}
         style={{ 
           position: 'static', 

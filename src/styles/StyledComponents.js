@@ -55,59 +55,21 @@ export const Wrapper = styled.div`
 
 export const DesktopLayout = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 20px;
+  padding: 30px 20px;
   width: 100%;
-  gap: 40px;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
   
   @media (max-width: 768px) {
-    padding: 10px;
-    gap: 20px;
+    padding: 20px 10px;
     overflow-y: auto;
     max-height: calc(100vh - 60px);
-  }
-`;
-
-export const DesktopIcon = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 90px;
-  margin-bottom: 40px;
-  cursor: pointer;
-  text-align: center;
-  
-  @media (max-width: 768px) {
-    margin-bottom: 35px;
-    width: 70px;
-  }
-`;
-
-export const IconImage = styled.img`
-  width: 60px;
-  height: 60px;
-  image-rendering: pixelated;
-  
-  @media (max-width: 768px) {
-    width: 50px;
-    height: 50px;
-  }
-`;
-
-export const IconText = styled.span`
-  color: white;
-  font-size: 14px;
-  margin-top: 4px;
-  text-shadow: 1px 1px 1px black;
-  padding: 2px 4px;
-  width: 100%;
-  text-align: center;
-  word-break: break-word;
-  
-  @media (max-width: 768px) {
-    font-size: 12px;
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 `;
 
@@ -167,6 +129,8 @@ export const WindowWrapper = styled(Window)`
         return '650px';
       case props.isCv:
         return '850px';
+      case props.isHomm3Cv:
+        return '800px';
       case props.isDmk:
         return '765px';
       default:
@@ -185,6 +149,8 @@ export const WindowWrapper = styled(Window)`
         return '320px';
       case props.isCv:
         return '850px';
+      case props.isHomm3Cv:
+        return '700px';
       case props.isDmk:
         return '470px';
       default:

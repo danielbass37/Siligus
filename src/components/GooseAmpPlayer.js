@@ -53,7 +53,7 @@ const GooseAmpPlayer = ({ onClose }) => {
     // Setup position based on device
     if (isMobile) {
       // For mobile devices, position more to the left
-      setPosition({ x: 20, y: 100 });
+      setPosition({ x: Math.max(10, (window.innerWidth - 350) / 2), y: 100 });
     } else {
       // For desktop, use the original position
       setPosition({ x: 250, y: 150 });
@@ -63,7 +63,10 @@ const GooseAmpPlayer = ({ onClose }) => {
     const handleResize = () => {
       const isMobileView = window.innerWidth <= 768;
       if (isMobileView) {
-        setPosition(prev => ({ ...prev, x: Math.min(prev.x, 20) }));
+        setPosition(prev => ({ 
+          ...prev, 
+          x: Math.max(10, (window.innerWidth - 350) / 2) 
+        }));
       }
     };
     
@@ -195,7 +198,7 @@ const GooseAmpPlayer = ({ onClose }) => {
       default={{
         x: position.x,
         y: position.y,
-        width: 375,
+        width: window.innerWidth <= 768 ? 350 : 375,
         height: 'auto'
       }}
       position={position}
@@ -204,6 +207,7 @@ const GooseAmpPlayer = ({ onClose }) => {
       }}
       enableResizing={false}
       dragHandleClassName="gooseamp-title-bar"
+      style={{ zIndex: 5 }}
     >
       <GooseAmpWrapper>
         <FontStyles />

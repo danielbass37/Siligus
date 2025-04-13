@@ -1,19 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { 
+import {
+  // Icon grid configuration
+  DESKTOP_ICONS_PER_COLUMN,
+  MOBILE_ICONS_PER_COLUMN,
+  CONFIG,
+  
+  // Regular icon styles
+  IconsContainer,
+  IconColumn,
+  IconWrapper,
   DesktopIcon,
   IconImage,
-  IconText
-} from '../styles/StyledComponents';
+  IconText,
+  
+  // GooseAmp specific styles
+  FixedPositionIcon,
+  GooseAmpDesktopIcon,
+  GooseAmpIconImage,
+  GooseAmpIconText
+} from '../styles/IconStyles';
 
 const DesktopIcons = ({ icons, handleIconClick }) => {
-  const [gooseampPosition, setGooseampPosition] = useState({ bottom: '80px', right: '20px' });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Update gooseamp position and check screen size on resize
+  // Update screen size on resize
   useEffect(() => {
     const handleResize = () => {
-      setGooseampPosition({ bottom: '80px', right: '20px' });
-      setIsMobile(window.innerWidth <= 768);
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      console.log(`Device type: ${mobile ? 'Mobile' : 'Desktop'}`);
+      console.log(`Using ICONS_PER_COLUMN: ${mobile ? CONFIG.MOBILE.ICONS_PER_COLUMN : CONFIG.DESKTOP.ICONS_PER_COLUMN}`);
     };
 
     handleResize();
@@ -24,72 +40,98 @@ const DesktopIcons = ({ icons, handleIconClick }) => {
     };
   }, []);
 
-  // Separate regular icons from the gooseamp icon
-  const regularIcons = icons.filter(icon => icon.id !== 'gooseamp');
-  const gooseampIcon = icons.find(icon => icon.id === 'gooseamp');
+  // Filter icons based on device type and visibility settings
+  const getVisibleIcons = (iconsArray) => {
+    const filtered = iconsArray.filter(icon => {
+      // If visibility is not defined, show by default
+      if (!icon.visibility) return true;
+      
+      // Show based on device type
+      return isMobile ? icon.visibility.mobile : icon.visibility.desktop;
+    });
+    
+    console.log(`Filtered icons (${isMobile ? 'Mobile' : 'Desktop'}):`, filtered.map(i => i.id));
+    return filtered;
+  };
 
-  // Split icons into two columns
-  const leftColumnIcons = regularIcons.slice(0, 4); // 4 icons for desktop
-  const rightColumnIcons = regularIcons.slice(4); // Rest of the icons
+  // Get visible icons
+  const visibleIcons = getVisibleIcons(icons);
+  
+  // Filter out the gooseampIcon since it has special positioning
+  const regularIcons = visibleIcons.filter(icon => icon.id !== 'gooseamp');
+  const gooseampIcon = visibleIcons.find(icon => icon.id === 'gooseamp');
+  
+  // Organize icons into columns based on the configuration constants
+  const organizeIcons = () => {
+    const maxIconsPerColumn = isMobile ? MOBILE_ICONS_PER_COLUMN : DESKTOP_ICONS_PER_COLUMN;
+    const columns = [];
+    
+    // First column always has maximum number of icons (or fewer if there aren't enough)
+    columns.push(regularIcons.slice(0, maxIconsPerColumn));
+    
+    // Distribute remaining icons according to rules
+    const remaining = regularIcons.slice(maxIconsPerColumn);
+    
+    // Second column always has max icons initially (or up to maxIconsPerColumn, if fewer)
+    const secondColumnSize = Math.min(remaining.length, maxIconsPerColumn);
+    if (secondColumnSize > 0) {
+      columns.push(remaining.slice(0, secondColumnSize));
+    }
+    
+    // If there are more icons, create additional columns as needed
+    const extraIcons = remaining.slice(secondColumnSize);
+    if (extraIcons.length > 0) {
+      for (let i = 0; i < extraIcons.length; i += maxIconsPerColumn) {
+        columns.push(extraIcons.slice(i, i + maxIconsPerColumn));
+      }
+    }
+    
+    console.log(`Created ${columns.length} columns with max ${maxIconsPerColumn} icons per column`);
+    return columns;
+  };
+  
+  const iconColumns = organizeIcons();
 
   return (
     <>
-      {/* Left column icons */}
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {leftColumnIcons.map((icon) => (
-          <div key={icon.id} style={{ position: 'relative' }}>
-            <DesktopIcon
-              onClick={() => handleIconClick(icon)}
-              onTouchStart={() => handleIconClick(icon)}
-            >
-              <IconImage src={icon.icon} alt={icon.label} />
-              <IconText>{icon.label}</IconText>
-            </DesktopIcon>
-          </div>
+      {/* Regular desktop icons in grid layout */}
+      <IconsContainer>
+        {iconColumns.map((column, columnIndex) => (
+          <IconColumn key={`column-${columnIndex}`}>
+            {column.map(icon => (
+              <IconWrapper key={icon.id} isMobile={isMobile}>
+                <DesktopIcon
+                  onClick={() => handleIconClick(icon)}
+                  onTouchStart={() => handleIconClick(icon)}
+                  isMobile={isMobile}
+                >
+                  <IconImage src={icon.icon} alt={icon.label} isMobile={isMobile} />
+                  <IconText isMobile={isMobile}>{icon.label}</IconText>
+                </DesktopIcon>
+              </IconWrapper>
+            ))}
+          </IconColumn>
         ))}
-      </div>
+      </IconsContainer>
 
-      {/* Right column icons */}
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {rightColumnIcons.map((icon, index) => (
-          <div 
-            key={icon.id} 
-            style={{ 
-              position: 'relative',
-              // Only apply negative margin on mobile
-              marginTop: index === 0 ? '0' : (isMobile ? '-18px' : '0')
-            }}
-          >
-            <DesktopIcon
-              onClick={() => handleIconClick(icon)}
-              onTouchStart={() => handleIconClick(icon)}
-            >
-              <IconImage src={icon.icon} alt={icon.label} />
-              <IconText>{icon.label}</IconText>
-            </DesktopIcon>
-          </div>
-        ))}
-      </div>
-
-      {/* GooseAmp icon (fixed position) */}
+      {/* GooseAmp icon with special positioning */}
       {gooseampIcon && (
-        <div 
-          style={{ 
-            position: 'absolute', 
-            bottom: gooseampPosition.bottom, 
-            right: gooseampPosition.right,
-            zIndex: 0
-          }}
-        >
-          <DesktopIcon 
+        <FixedPositionIcon isMobile={isMobile}>
+          <GooseAmpDesktopIcon
             onClick={() => handleIconClick(gooseampIcon)}
             onTouchStart={() => handleIconClick(gooseampIcon)}
-            style={{ margin: '0' }}
+            isMobile={isMobile}
           >
-            <IconImage src={gooseampIcon.icon} alt={gooseampIcon.label} />
-            <IconText>{gooseampIcon.label}</IconText>
-          </DesktopIcon>
-        </div>
+            <GooseAmpIconImage 
+              src={gooseampIcon.icon} 
+              alt={gooseampIcon.label}
+              isMobile={isMobile}
+            />
+            <GooseAmpIconText isMobile={isMobile}>
+              {gooseampIcon.label}
+            </GooseAmpIconText>
+          </GooseAmpDesktopIcon>
+        </FixedPositionIcon>
       )}
     </>
   );

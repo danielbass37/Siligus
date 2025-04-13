@@ -9,6 +9,12 @@ export const GooseAmpWrapper = styled.div`
   background: linear-gradient(to right, #15151F, #383958, #1F1E2E);
   border: 2px ridge #4d5278;
   box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    width: 350px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
 `;
 
 export const GooseAmpTitleBar = styled.div`

@@ -6,7 +6,7 @@ import AboutWindow from './AboutWindow';
 import BlogWindow from './BlogWindow';
 import VideoProjectsWindow from './VideoProjectsWindow';
 import CVWindow from './CVWindow';
-import HOMM3CVWindow from './HOMM3CVWindow';
+import HOMM3CVWindow from './HOMM3CV/HOMM3CVWindow';
 import DeveloperMarketingWindow from './DeveloperMarketingWindow';
 import useWindowSize from '../hooks/useWindowSize';
 

@@ -136,7 +136,7 @@ const AboutWebsiteWindow = ({ onClose, colonVisible }) => {
           
           <div>
             <p>
-              Time I've spent on building this thing so far:
+              Time I spent building this (From 0 to basic deployment):
             </p>
             <p style={{ textAlign: 'center', margin: '15px 0' }}>
               <span style={{ 

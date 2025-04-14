@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// Styled components for HOMM3 style
+// Styled components for HOMM3 desktop style
 const HOMM3Container = styled.div`
   background-color: #000;
   color: #ffcd9a;
@@ -93,7 +93,7 @@ const HOMM3SkillIcon = styled.span`
   margin-right: 3px;
 `;
 
-const HOMM3CVWindow = () => {
+const HOMM3CVDesktopView = () => {
   const renderSkillLevel = (level) => {
     const maxLevel = 5;
     const stars = [];
@@ -173,4 +173,4 @@ const HOMM3CVWindow = () => {
   );
 };
 
-export default HOMM3CVWindow; 
+export default HOMM3CVDesktopView; 

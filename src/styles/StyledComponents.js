@@ -130,7 +130,7 @@ export const WindowWrapper = styled(Window)`
       case props.isCv:
         return '850px';
       case props.isHomm3Cv:
-        return '800px';
+        return '1200px';
       case props.isDmk:
         return '765px';
       default:
@@ -150,7 +150,7 @@ export const WindowWrapper = styled(Window)`
       case props.isCv:
         return '850px';
       case props.isHomm3Cv:
-        return '700px';
+        return '1024px';
       case props.isDmk:
         return '470px';
       default:

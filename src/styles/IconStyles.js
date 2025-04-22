@@ -197,7 +197,7 @@ export const desktopIcons = [
     id: 'homm3cv', 
     title: 'Heroes of Might and Magic III',
     visibility: {
-      desktop: false,  // Show on desktop
+      desktop: true,  // Show on desktop
       mobile: true    // Show on mobile
     }
   },

@@ -50,8 +50,24 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
         initialHeight = isMobile ? 'auto' : 850;
         break;
       case selectedIcon.id === 'homm3cv':
-        initialWidth = isMobile ? screenWidth * 0.95 : 800;
-        initialHeight = isMobile ? 'auto' : 700;
+        // Desktop only sizing for HOMM3CV (mobile is handled by MobileView.js)
+        // Preserve the exact aspect ratio of 1100:973
+        const homm3Ratio = 1100 / 973;
+        
+        // For desktop: scale down proportionally if screen is too small
+        const maxWidth = Math.min(screenWidth * 0.9, 1100);
+        const maxHeight = Math.min(screenHeight * 0.9, 973);
+        
+        // Determine which dimension is the limiting factor
+        if (maxWidth / homm3Ratio <= maxHeight) {
+          // Width is limiting
+          initialWidth = maxWidth;
+          initialHeight = maxWidth / homm3Ratio;
+        } else {
+          // Height is limiting
+          initialHeight = maxHeight;
+          initialWidth = maxHeight * homm3Ratio;
+        }
         break;
       case selectedIcon.id === 'hottakes':
         initialWidth = isMobile ? screenWidth * 0.95 : 765;
@@ -155,7 +171,9 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
           width: '100%',
           height: '100%',
           maxWidth: 'none',
-          maxHeight: windowSize.height === 'auto' ? '80vh' : 'none'
+          maxHeight: windowSize.height === 'auto' ? '80vh' : 'none',
+          padding: selectedIcon?.id === 'homm3cv' ? '0' : undefined,
+          margin: selectedIcon?.id === 'homm3cv' ? '0' : undefined
         }}
       >
         <WindowHeader 
@@ -214,10 +232,10 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
           </Button>
         </WindowHeader>
         <WindowContent style={{ 
-          padding: selectedIcon?.id === 'videos' ? '0' : undefined,
-          overflow: selectedIcon?.id === 'videos' ? 'visible' : 'auto',
-          maxHeight: 'calc(80vh - 33px)',
-          overflowY: 'auto'
+          padding: selectedIcon?.id === 'videos' || selectedIcon?.id === 'homm3cv' ? '0' : undefined,
+          overflow: selectedIcon?.id === 'videos' || selectedIcon?.id === 'homm3cv' ? 'visible' : 'auto',
+          maxHeight: selectedIcon?.id === 'homm3cv' ? 'none' : 'calc(80vh - 33px)',
+          overflowY: selectedIcon?.id === 'homm3cv' ? 'hidden' : 'auto'
         }}
         onClick={(e) => {
           // Stop propagation to prevent interference with other click handlers

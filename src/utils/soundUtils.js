@@ -12,6 +12,9 @@ let bgmSource = null;
 let bgmGainNode = null;
 let isInitialized = false;
 
+// Global mute state
+let isMuted = false;
+
 // Volume settings
 const MASTER_VOLUME = 0.25;
 const SYSTEM_VOLUME = 0.125; // Half of master volume for SYSMSG
@@ -75,8 +78,32 @@ initAudioSystem().catch(() => {
   // Silent failure is OK - will try again on user interaction
 });
 
+// Mute/unmute functions
+export const getMuteState = () => isMuted;
+
+export const setMuteState = (muted) => {
+  isMuted = muted;
+  
+  // If we're muting, stop the background music
+  if (isMuted && bgmSource) {
+    stopBackgroundMusic();
+  }
+  
+  // If we're unmuting, restart the background music if it was playing
+  // This would need additional logic to remember if BGM was playing
+  
+  return isMuted;
+};
+
+export const toggleMute = () => {
+  return setMuteState(!isMuted);
+};
+
 // Play a sound with minimal latency
 export const playSound = (sound) => {
+  // Skip if muted
+  if (isMuted) return;
+  
   if (!audioContext) {
     initAudioContext();
   }
@@ -112,6 +139,9 @@ export const playSound = (sound) => {
 
 // Start playing background music with looping
 export const startBackgroundMusic = () => {
+  // Skip if muted
+  if (isMuted) return;
+  
   if (!audioContext) {
     initAudioContext();
   }
@@ -195,6 +225,9 @@ export const attachInstantSound = (element, sound = Sounds.BUTTON) => {
   if (!element) return;
   
   const playOnInteract = () => {
+    // Skip if muted
+    if (isMuted) return;
+    
     // Resume context if suspended
     if (audioContext && audioContext.state === 'suspended') {
       audioContext.resume();

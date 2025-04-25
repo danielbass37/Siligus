@@ -25,6 +25,9 @@ import GooseAmpPlayer from './components/GooseAmpPlayer';
 // Import constants
 import { desktopIcons } from './styles/IconStyles';
 
+// Import sound utilities
+import { getMuteState, toggleMute } from './utils/soundUtils';
+
 const App = () => {
   // Initialize Google Analytics
   useGoogleAnalytics();
@@ -49,10 +52,17 @@ const App = () => {
   const [fadeIn, setFadeIn] = useState(false);
   const [showBackground, setShowBackground] = useState(false);
   const [openStartMenu, setOpenStartMenu] = useState(false);
+  const [isMuted, setIsMuted] = useState(getMuteState());
 
   // Toggle start menu
   const toggleStartMenu = () => {
     setOpenStartMenu(prev => !prev);
+  };
+
+  // Toggle mute state
+  const handleToggleMute = () => {
+    const newMuteState = toggleMute();
+    setIsMuted(newMuteState);
   };
 
   // Fade in the desktop after loading screen
@@ -129,6 +139,8 @@ const App = () => {
             toggleStartMenu={toggleStartMenu}
             handleAboutSiligusClick={openSiligusWindow}
             handleAboutWebsiteClick={openAboutWebsiteWindow}
+            isMuted={isMuted}
+            handleToggleMute={handleToggleMute}
           />
 
           {showSiligusWindow && (

@@ -31,9 +31,9 @@ const CheckmarkButton = styled.div`
   transform: translateX(-50%);
   width: calc(18vw + 10px); /* Responsive width based on viewport width */
   height: calc(4vh + 15px); /* Responsive height based on viewport height */
-  min-width: 65px; /* Ensure minimum clickable size */
-  min-height: 35px; /* Ensure minimum clickable size */
-  max-width: 125px; /* Limit maximum size */
+  min-width: 80px; /* Ensure minimum clickable size */
+  min-height: 40px; /* Ensure minimum clickable size */
+  max-width: 140px; /* Limit maximum size */
   background-color: transparent;
   z-index: 20;
   cursor: pointer;
@@ -156,8 +156,9 @@ const HOMM3CVMobileView = ({ onClose }) => {
       {/* Blocking overlay to prevent interaction with background */}
       <BlockingOverlay onClick={blockEvent} onTouchStart={blockEvent} />
       
-      {/* Checkmark button - use only touchstart on mobile to prevent double events */}
+      {/* Checkmark button - use both click and touchstart to ensure it works on all devices */}
       <CheckmarkButton
+        onClick={handleDismiss}
         onTouchStart={handleDismiss}
         aria-label="Close CV"
       />

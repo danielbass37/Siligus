@@ -66,7 +66,7 @@ const areaConfig = {
     description: "Information about Armageddon's Blade",
     sound: Sounds.BUTTON,
     messageSize: 'tiny',
-    messageText: "Armageddon's Blade\nI totally have one."
+    messageText: "Armageddon's Blade.\nI totally have one."
   },
   3: {
     name: "Reddit Icon",
@@ -159,7 +159,7 @@ const areaConfig = {
     description: "Information about Tucha",
     sound: Sounds.BUTTON,
     messageSize: 'small',
-    messageText: "Tucha (From RU. Туча - Storm Cloud). A feral beast (cat) that ruins every Zoom call."
+    messageText: "Tucha (From RU. Туча - Storm Cloud).\nMy feral beast (cat) - ruins every Zoom call."
   },
   
   16: {

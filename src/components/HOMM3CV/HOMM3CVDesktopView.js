@@ -53,7 +53,7 @@ const DebugPanel = styled.div`
 
 const HOMM3CVDesktopView = ({ onClose }) => {
   const [lastClickedArea, setLastClickedArea] = useState(null);
-  const [showDebugPanel, setShowDebugPanel] = useState(true);
+  const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [messageWindow, setMessageWindow] = useState(null);
   const [debugMessage, setDebugMessage] = useState("");
   // Keep track of whether we're holding down on a tiny area

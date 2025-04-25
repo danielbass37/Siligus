@@ -130,7 +130,7 @@ const WindowManager = ({ showWindow, selectedIcon, setShowWindow }) => {
       case 'cv':
         return <CVWindow />;
       case 'homm3cv':
-        return <HOMM3CVWindow />;
+        return <HOMM3CVWindow onClose={() => setShowWindow(false)} />;
       case 'hottakes':
         return <DeveloperMarketingWindow />;
       default:

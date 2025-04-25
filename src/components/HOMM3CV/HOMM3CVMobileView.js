@@ -1,38 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import mobileGif from '../../assets/HOMM3CV/mobile.gif';
-// Import the MP3 sound files instead of WAV
-import systemSoundFile from '../../assets/HOMM3CV/SYSMSG.mp3';
-import buttonSoundFile from '../../assets/HOMM3CV/BUTTON.mp3';
-
-// Create actual audio elements to be reused
-let systemSound, buttonSound;
-
-// Initialize sounds on load
-try {
-  systemSound = new Audio(systemSoundFile);
-  buttonSound = new Audio(buttonSoundFile);
-  
-  // Configure sounds
-  systemSound.volume = 1.0;
-  buttonSound.volume = 1.0;
-  
-  // Preload sounds
-  systemSound.preload = 'auto';
-  buttonSound.preload = 'auto';
-} catch (error) {
-  console.error("Error initializing sounds:", error);
-}
+import { playSound, initAudioSystem, Sounds } from '../../utils/soundUtils';
 
 const MobileGifContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100% + 32px);
-  width: calc(100% + 32px);
+  height: 100%;
+  width: 100%;
   background-color: #000;
   overflow: hidden;
-  margin: -16px;
   box-sizing: border-box;
   position: relative;
 `;
@@ -41,8 +19,9 @@ const StyledGif = styled.img`
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: fill;
+  object-fit: contain;
   pointer-events: none; /* Prevent the GIF from receiving pointer events */
+  margin: 0 auto;
 `;
 
 const CheckmarkButton = styled.div`
@@ -75,75 +54,37 @@ const BlockingOverlay = styled.div`
   z-index: 5;
 `;
 
-const HOMM3CVMobileView = () => {
-  
+const HOMM3CVMobileView = ({ onClose }) => {
   // Use a ref to track if the system sound has already played
-  // Using a ref instead of state to avoid re-renders
   const systemSoundPlayed = useRef(false);
-  
-  // Simple function to play a sound
-  const playSound = (sound, label, force = false) => {
-    // For system sound, check if it's already been played unless forced
-    if (label.includes("System") && systemSoundPlayed.current && !force) {
-      return;
-    }
-    
-    // Mark system sound as played
-    if (label.includes("System") && !systemSoundPlayed.current) {
-      systemSoundPlayed.current = true;
-    }
-    
-    try {
-      // Clone the audio to avoid overlap issues
-      const soundToPlay = sound.cloneNode();
-      soundToPlay.volume = 1.0;
-      
-      soundToPlay.play().catch(() => {
-        // Silent failure - some browsers restrict autoplay
-      });
-    } catch (error) {
-      // Silent failure
-    }
-  };
+  // Track if dismiss is in progress to prevent double sound
+  const dismissInProgress = useRef(false);
   
   // Try to play system sound when the component mounts (when window opens)
   useEffect(() => {
-    // Only do this once on initial mount
+    // Initialize the audio system
+    initAudioSystem();
+    
+    // Only play system sound once
     if (systemSoundPlayed.current) return;
     
-    // Try to play system sound immediately with a very small delay
+    // Try to play system sound with a small delay
     setTimeout(() => {
       if (!systemSoundPlayed.current) {
-        playSound(systemSound, "System sound (initial)");
+        playSound(Sounds.SYSTEM);
+        systemSoundPlayed.current = true;
       }
     }, 50);
     
-    // Initialize sound system if needed
-    const initAudio = () => {
-      try {
-        // Use a silent sound to initialize audio context
-        const silentSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABIgD///////////////////////////////////////////8AAAA8TEFNRTMuMTAwAQAAAAAAAAAAABQgJAUHQQAB4AAASCP/LWkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==");
-        silentSound.volume = 0.001;
-        silentSound.play().then(() => {
-          
-          // Try playing the system sound again if it hasn't played yet
-          if (!systemSoundPlayed.current) {
-            playSound(systemSound, "System sound (after init)");
-          }
-        }).catch(() => {
-          // Silent failure
-        });
-      } catch (e) {
-        // Silent failure
-      }
-    };
-    
-    // Initialize audio
-    initAudio();
-    
     // Add a one-time event listener for user interaction to initialize audio
     const handleUserInteraction = () => {
-      initAudio();
+      initAudioSystem();
+      
+      // Try playing the system sound again if it hasn't played yet
+      if (!systemSoundPlayed.current) {
+        playSound(Sounds.SYSTEM);
+        systemSoundPlayed.current = true;
+      }
       
       // Remove event listeners after first interaction
       document.removeEventListener('click', handleUserInteraction);
@@ -164,8 +105,12 @@ const HOMM3CVMobileView = () => {
     e.stopPropagation();
     e.preventDefault();
     
+    // Prevent double sound by checking if dismiss is already in progress
+    if (dismissInProgress.current) return;
+    dismissInProgress.current = true;
+    
     // Play button sound
-    playSound(buttonSound, "Button sound");
+    playSound(Sounds.BUTTON);
     
     // Close window with a delay to allow sound to play
     setTimeout(closeWindow, 100);
@@ -173,6 +118,11 @@ const HOMM3CVMobileView = () => {
   
   // Function to close the window
   const closeWindow = () => {
+    if (onClose) {
+      onClose();
+      return;
+    }
+    
     try {
       // Try multiple selectors to find the close button
       const closeButton = 
@@ -200,25 +150,16 @@ const HOMM3CVMobileView = () => {
 
   return (
     <MobileGifContainer>
-      <BlockingOverlay 
-        onClick={blockEvent} 
-        onTouchStart={blockEvent} 
-        onTouchEnd={blockEvent} 
-      />
-      <StyledGif src={mobileGif} alt="This section doesn't support mobile yet. Why would it? It's 2005." />
-      <CheckmarkButton 
-        onClick={handleDismiss} 
+      {/* The mobile GIF */}
+      <StyledGif src={mobileGif} alt="Heroes of Might and Magic 3 mobile CV" />
+      
+      {/* Blocking overlay to prevent interaction with background */}
+      <BlockingOverlay onClick={blockEvent} onTouchStart={blockEvent} />
+      
+      {/* Checkmark button - use only touchstart on mobile to prevent double events */}
+      <CheckmarkButton
         onTouchStart={handleDismiss}
-        onTouchMove={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-        onTouchEnd={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }} 
-        role="button" 
-        aria-label="Dismiss window" 
+        aria-label="Close CV"
       />
     </MobileGifContainer>
   );

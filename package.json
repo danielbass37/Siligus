@@ -49,5 +49,12 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "typescript": "4.9.5"
+  },
+  "resolutions": {
+    "nth-check": "2.0.1",
+    "rollup": "3.29.5",
+    "postcss": "8.4.31",
+    "http-proxy-middleware": "2.0.9",
+    "picocolors": "1.0.1"
   }
 }

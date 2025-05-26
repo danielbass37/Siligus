@@ -8,7 +8,7 @@ import {
   QuoteContainer,
   BoldText
 } from '../styles/StyledComponents';
-import dmImage from '../assets/dmk.webp';
+import dmImage from '../assets/dmk.gif';
 
 const DeveloperMarketingWindow = () => {
   return (
@@ -21,14 +21,14 @@ const DeveloperMarketingWindow = () => {
       <BlogContent>
         <div>
           <p style={{ marginBottom: '1rem' }}>
-            Developer conferences are a huge part of what I do at Permit.io, and it's been a thrill to see how well people react to what we do.
+            Developer conferences are a huge part of what I do, and it's been a thrill to see how people react to them.
           </p>
           <p style={{ marginBottom: '1rem' }}>
             Read a blog where I share some of my hot takes about developer conferences and developer marketing.
           </p>
           <QuoteContainer>
             <p style={{ fontStyle: 'italic' }}>
-              "Try and tell developers that they suck at what they do, and they should listen to you when it comes to how their software should be built. Also, please do it on Reddit from a company account, <BoldText>and send me pics</BoldText>."
+              "Try and tell developers that they suck at what they do, and that you know their software better than them. Also, please do it on Reddit from a company account, <BoldText>and send me pics</BoldText>."
             </p>
           </QuoteContainer>
         </div>

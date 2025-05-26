@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import mobileGif from '../../assets/HOMM3CV/mobile.gif';
 import { playSound, initAudioSystem, Sounds } from '../../utils/soundUtils';
+import { preloadHOMM3CVImages } from '../../utils/imagePreloader';
 
 const MobileGifContainer = styled.div`
   display: flex;
@@ -62,6 +63,9 @@ const HOMM3CVMobileView = ({ onClose }) => {
   
   // Try to play system sound when the component mounts (when window opens)
   useEffect(() => {
+    // Preload images for better performance
+    preloadHOMM3CVImages().catch(console.warn);
+    
     // Initialize the audio system
     initAudioSystem();
     

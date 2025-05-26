@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import messageTiny from '../../assets/HOMM3CV/message_tiny.png';
 import messageSmall from '../../assets/HOMM3CV/message_small.png';
@@ -6,6 +6,7 @@ import messageLarge from '../../assets/HOMM3CV/message_large.png';
 import W95FAFont from '../../assets/HOMM3CV/W95FA.otf';
 import { playSound, Sounds } from '../../utils/soundUtils';
 import areaConfig from './HOMM3CVConfig';
+import { areHOMM3CVImagesPreloaded } from '../../utils/imagePreloader';
 
 // Import the W95FA font
 const FontImport = createGlobalStyle`
@@ -99,6 +100,9 @@ const CloseButton = styled.div`
  * @param {number} props.areaId The ID of the area being clicked
  */
 const MessageWindow = ({ size, onClose, areaId }) => {
+  const [isLoading, setIsLoading] = useState(!areHOMM3CVImagesPreloaded());
+  const [error, setError] = useState(null);
+
   const handleClose = () => {
     // Play button sound when closing
     playSound(Sounds.BUTTON);
@@ -238,6 +242,33 @@ const MessageWindow = ({ size, onClose, areaId }) => {
     }
   };
   
+  useEffect(() => {
+    // Determine which message image to use based on size
+    let imageSrc;
+    switch (size) {
+      case 'large':
+        imageSrc = messageLarge;
+        break;
+      case 'small':
+        imageSrc = messageSmall;
+        break;
+      case 'tiny':
+      default:
+        imageSrc = messageTiny;
+        break;
+    }
+    
+    const image = new Image();
+    image.src = imageSrc;
+    image.onload = () => {
+      setIsLoading(false);
+    };
+    image.onerror = () => {
+      setError('Failed to load image');
+      setIsLoading(false);
+    };
+  }, [size]);
+
   return (
     <MessageContainer onClick={size !== 'tiny' ? handleClose : undefined}>
       <FontImport />
@@ -245,23 +276,31 @@ const MessageWindow = ({ size, onClose, areaId }) => {
         style={getWrapperStyles()}
         onClick={e => e.stopPropagation()}
       >
-        <MessageImage 
-          src={getMessageImage()} 
-          alt={`${size} message`}
-        />
-        
-        <TextContainer style={getContainerStyle()}>
-          <MessageText style={getTextStyle()}>
-            {getMessageText()}
-          </MessageText>
-        </TextContainer>
-        
-        {/* Only render close button for large and small windows */}
-        {size !== 'tiny' && (
-          <CloseButton 
-            onClick={handleClose} 
-            style={getCloseButtonStyle()}
-          />
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Error loading image</div>
+        ) : (
+          <>
+            <MessageImage 
+              src={getMessageImage()} 
+              alt={`${size} message`}
+            />
+            
+            <TextContainer style={getContainerStyle()}>
+              <MessageText style={getTextStyle()}>
+                {getMessageText()}
+              </MessageText>
+            </TextContainer>
+            
+            {/* Only render close button for large and small windows */}
+            {size !== 'tiny' && (
+              <CloseButton 
+                onClick={handleClose} 
+                style={getCloseButtonStyle()}
+              />
+            )}
+          </>
         )}
       </ImageWrapper>
     </MessageContainer>

@@ -305,9 +305,9 @@ export const BlogImage = styled.img`
     if (props.isHottakes) return '357px';  // Add specific size for hottakes
     return '300px';  // Default size
   }};
-  border: 2px solid ${({ theme }) => theme.borderDark};
-  padding: 2px;
-  background: ${({ theme }) => theme.desktopBackground};
+  border: ${props => props.isHottakes ? '2px inset #c0c0c0' : `2px solid ${props.theme.borderDark}`};
+  padding: ${props => props.isHottakes ? '2px' : '2px'};
+  background: ${props => props.isHottakes ? 'transparent' : props.theme.desktopBackground};
   
   @media (max-width: 768px) {
     width: ${props => {

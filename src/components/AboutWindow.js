@@ -17,10 +17,10 @@ const AboutWindow = () => {
       />
       <AboutContent>
         <p style={{ marginBottom: '1rem' }}>
-          I could explain your product to your grandmother and she'd be proud of you.
+          I can explain your product to your grandmother and she'd be proud of you.
         </p>
         <p style={{ marginBottom: '1rem' }}>
-          I took everything I learned bartending, and applied it to making blogs, microcopy, docs, ads, and newsletters sound honest, genuine, and human.
+          I took everything I learned bartending and applied it to making copywriting and content sound honest, genuine, and human.
         </p>
         <p>
           I also built this thing. Replace AI with me.

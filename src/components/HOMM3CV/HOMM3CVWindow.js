@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import HOMM3CVDesktopView from './HOMM3CVDesktopView';
 import HOMM3CVMobileView from './HOMM3CVMobileView';
 import { initAudioSystem } from '../../utils/soundUtils';
+import { preloadHOMM3CVImages } from '../../utils/imagePreloader';
 
 const HOMM3CVWindow = ({ onClose }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -15,8 +16,9 @@ const HOMM3CVWindow = ({ onClose }) => {
     handleResize(); // Initial check
     window.addEventListener('resize', handleResize);
     
-    // Initialize audio system early
+    // Initialize audio system and preload images early
     initAudioSystem();
+    preloadHOMM3CVImages().catch(console.warn);
     
     return () => {
       window.removeEventListener('resize', handleResize);

@@ -5,6 +5,7 @@ import HOMM3CVClickableOverlay from './HOMM3CVClickableOverlay';
 import MessageWindow from './MessageWindow';
 import areaConfig from './HOMM3CVConfig';
 import { playSound, initAudioSystem, startBackgroundMusic, stopBackgroundMusic } from '../../utils/soundUtils';
+import { preloadHOMM3CVImages } from '../../utils/imagePreloader';
 
 // Styled components for HOMM3 desktop view
 const HOMM3Container = styled.div`
@@ -60,10 +61,13 @@ const HOMM3CVDesktopView = ({ onClose }) => {
   const tinyMouseDownRef = useRef(false);
   const clickedAreaRef = useRef(null);
   
-  // Initialize audio system and start background music
+  // Initialize audio system, preload images, and start background music
   useEffect(() => {
     // Initialize audio system first
     const init = async () => {
+      // Preload images for better performance
+      preloadHOMM3CVImages().catch(console.warn);
+      
       await initAudioSystem();
       
       // Start background music with a slight delay to ensure audio context is ready

@@ -163,9 +163,9 @@ export const desktopIcons = [
   },
   { 
     icon: newsletterIcon, 
-    label: 'Permit.io Newsletter', 
+    label: 'Newsletter', 
     id: 'newsletter', 
-    title: 'Permit.io Newsletter',
+    title: 'Newsletter',
     visibility: {
       desktop: true,  // Show on desktop
       mobile: true    // Show on mobile
